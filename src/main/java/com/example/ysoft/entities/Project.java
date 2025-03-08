@@ -11,6 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "project")
 public class Project extends BaseEntity { //
 
     private String name;

@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "app_user")
+@Table(name = "app_users")
 public class User extends BaseEntity {
 
     private String nickName;

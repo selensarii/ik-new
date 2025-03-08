@@ -10,6 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "employee")
 public class Employee extends BaseEntity {  //
 
     private String fullName;
