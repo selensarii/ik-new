@@ -4,6 +4,7 @@ import com.example.ysoft.business.abstracts.ProjectService;
 import com.example.ysoft.business.dtos.responses.ProjectResponse;
 import com.example.ysoft.business.dtos.requests.ProjectRequest;
 import com.example.ysoft.dataAccess.ProjectRepository;
+import com.example.ysoft.entities.Employee;
 import com.example.ysoft.entities.Project;
 import com.example.ysoft.library.ProjectNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -60,13 +61,29 @@ public class ProjectManager implements ProjectService {
 
     @Override
     public void deleteProject(String id) {
-        UUID projectId = UUID.fromString(id); // String'i UUID'ye dönüştürme
+        UUID projectId = UUID.fromString(id);
         projectRepository.deleteById(projectId);
+    }
+    @Override
+    public List<String> getEmployeeNamesByProjectId(String projectId) {
+        UUID projectUuid = UUID.fromString(projectId);
+        return projectRepository.findEmployeeNamesByProjectId(projectUuid);
+    }
+
+    @Override
+    public Long getCountEmployeesByProjectId(String projectId) {
+        UUID projectUuid = UUID.fromString(projectId);
+        return projectRepository.countEmployeesByProjectId(projectUuid);
+    }
+    @Override
+    public List<Employee> getFindEmployeesByProjectId(String projectId) {
+        UUID projectUuid = UUID.fromString(projectId);
+        return projectRepository.findEmployeesByProjectId(projectUuid);
     }
 
     private ProjectResponse toResponse(Project project) {
         return ProjectResponse.builder()
-                .id(project.getId()) // UUID'yi String'e dönüştürme işlemini kaldırdık
+                .id(project.getId())
                 .name(project.getName())
                 .maxEmployee(project.getMaxEmployee())
                 .minEmployee(project.getMinEmployee())
