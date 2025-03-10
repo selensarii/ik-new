@@ -1,8 +1,11 @@
 package com.example.ysoft.business.concretes;
 
 import com.example.ysoft.business.abstracts.ProjectService;
-import com.example.ysoft.business.dtos.responses.ProjectResponseDto;
+import com.example.ysoft.business.dtos.requests.project.CreateProjectRequestDTO;
+import com.example.ysoft.business.dtos.requests.project.UpdateProjectRequestDTO;
+import com.example.ysoft.business.dtos.responses.*;
 import com.example.ysoft.business.dtos.requests.ProjectRequestDto;
+import com.example.ysoft.business.dtos.responses.project.*;
 import com.example.ysoft.dataAccess.ProjectRepository;
 import com.example.ysoft.entities.Employee;
 import com.example.ysoft.entities.Project;
@@ -10,6 +13,7 @@ import com.example.ysoft.library.ProjectNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -27,16 +31,19 @@ public class ProjectManager implements ProjectService {
 
     @Override
     public Project findById(String id) {
-        UUID projectId = UUID.fromString(id); // String'i UUID'ye dönüştürme
+        UUID projectId = UUID.fromString(id);
         return projectRepository.findById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException("Project Bulunamadı"));
     }
 
     @Override
-    public ProjectResponseDto addProject(ProjectRequestDto projectRequestDto) {
-        Project savedProject = projectRepository.save(toEntity(projectRequestDto));
-        return toResponse(savedProject);
+    public CreateProjectResponseDTO addProject(CreateProjectRequestDTO createProjectRequestDTO) {
+        Project project = toEntitys(createProjectRequestDTO);
+
+        Project savedProject = projectRepository.save(project);
+        return toRespons(savedProject);
     }
+
 
     @Override
     public ProjectResponseDto getById(String id) {
@@ -47,16 +54,30 @@ public class ProjectManager implements ProjectService {
     }
 
     @Override
-    public ProjectResponseDto updateProject(String id, ProjectRequestDto projectRequestDto) {
-        UUID projectId = UUID.fromString(id); // String'i UUID'ye dönüştürme
+    public UpdateProjectResponseDTO updateProject(UpdateProjectRequestDTO updateProjectRequestDTO) {
+        UUID projectId = updateProjectRequestDTO.getId();
+
         return projectRepository.findById(projectId)
                 .map(existingProject -> {
-                    Project updatedProject = toEntity(projectRequestDto);
-                    updatedProject.setId(existingProject.getId());
-                    return projectRepository.save(updatedProject);
+
+                    existingProject.setName(updateProjectRequestDTO.getName());
+                    existingProject.setMaxEmployee(updateProjectRequestDTO.getMaxEmployee());
+                    existingProject.setMinEmployee(updateProjectRequestDTO.getMinEmployee());
+                    existingProject.setTotalEmployee(updateProjectRequestDTO.getTotalEmployee());
+
+                    return projectRepository.save(existingProject);
                 })
-                .map(this::toResponse)
-                .orElseThrow(() -> new ProjectNotFoundException("Project Güncellenemedi"));
+                .map(this::toUpdateProjectResponse)
+                .orElseThrow(() -> new ProjectNotFoundException("Project not found or update failed"));
+    }
+    private UpdateProjectResponseDTO toUpdateProjectResponse(Project project) {
+        return new UpdateProjectResponseDTO(
+                project.getId(),
+                project.getName(),
+                project.getMaxEmployee(),
+                project.getMinEmployee(),
+                project.getTotalEmployee()
+        );
     }
 
     @Override
@@ -64,21 +85,45 @@ public class ProjectManager implements ProjectService {
         UUID projectId = UUID.fromString(id);
         projectRepository.deleteById(projectId);
     }
-    @Override
-    public List<String> getEmployeeNamesByProjectId(String projectId) {
-        UUID projectUuid = UUID.fromString(projectId);
-        return projectRepository.findEmployeeNamesByProjectId(projectUuid);
-    }
 
     @Override
-    public Long getCountEmployeesByProjectId(String projectId) {
+    public List<GetEmployeeNamesByProjectIdResponseDTO> getEmployeeNamesByProjectId(String projectId) {
         UUID projectUuid = UUID.fromString(projectId);
-        return projectRepository.countEmployeesByProjectId(projectUuid);
+        List<Employee> employees = projectRepository.findEmployeesByProjectId(projectUuid);
+
+        List<GetEmployeeNamesByProjectIdResponseDTO> dtoList2 = new ArrayList<>();
+        for (Employee emp : employees) {
+            dtoList2.add(new GetEmployeeNamesByProjectIdResponseDTO(emp.getFullName()));
+        }
+        return dtoList2;
     }
+
+
     @Override
-    public List<Employee> getFindEmployeesByProjectId(String projectId) {
+    public GetCountEmployeesByProjectIdResponseDTO getCountEmployeesByProjectId(String projectId) {
         UUID projectUuid = UUID.fromString(projectId);
-        return projectRepository.findEmployeesByProjectId(projectUuid);
+        Long count = projectRepository.countEmployeesByProjectId(projectUuid);
+
+        return new GetCountEmployeesByProjectIdResponseDTO(count);
+    }
+
+
+    @Override
+    public List<GetFindEmployeesByProjectIdResponseDTO> getFindEmployeesByProjectId(String projectId) {
+        UUID projectUuid = UUID.fromString(projectId);
+        List<Employee> employees = projectRepository.findEmployeesByProjectId(projectUuid);
+
+        List<GetFindEmployeesByProjectIdResponseDTO> dtoList = new ArrayList<>();
+        //employeeden gelen listeyi response listesine mapleyeceğim ve bu responsu return edeceğim.
+        for (Employee emp : employees) {
+            dtoList.add(new GetFindEmployeesByProjectIdResponseDTO(
+                    emp.getFullName(),
+                    emp.getPosition(),
+                    emp.getIdentityNumber(),
+                    emp.getSalary()
+            ));
+        }
+        return dtoList;
     }
 
     private ProjectResponseDto toResponse(Project project) {
@@ -99,4 +144,24 @@ public class ProjectManager implements ProjectService {
                 .totalEmployee(projectRequestDto.getTotalEmployee())
                 .build();
     }
+
+    private Project toEntitys(CreateProjectRequestDTO createProjectRequestDTO) {
+        return Project.builder()
+                .name(createProjectRequestDTO.getName())
+                .minEmployee(createProjectRequestDTO.getMinEmployee())
+                .maxEmployee(createProjectRequestDTO.getMaxEmployee())
+                .totalEmployee(createProjectRequestDTO.getTotalEmployee())
+                .build();
+    }
+    private CreateProjectResponseDTO toRespons(Project project) {
+        return new CreateProjectResponseDTO(
+                project.getId(),
+                project.getName(),
+                project.getMaxEmployee(),
+                project.getMinEmployee(),
+                project.getTotalEmployee()
+        );
+    }
+
+
 }

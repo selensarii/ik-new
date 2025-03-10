@@ -2,13 +2,16 @@ package com.example.ysoft.api.controller;
 
 import com.example.ysoft.business.abstracts.ProjectService;
 import com.example.ysoft.business.dtos.requests.ProjectRequestDto;
-import com.example.ysoft.business.dtos.responses.ProjectResponseDto;
-import com.example.ysoft.entities.Employee;
+import com.example.ysoft.business.dtos.requests.project.CreateProjectRequestDTO;
+import com.example.ysoft.business.dtos.requests.project.UpdateProjectRequestDTO;
+import com.example.ysoft.business.dtos.responses.*;
+import com.example.ysoft.business.dtos.responses.project.*;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("projects")
@@ -23,36 +26,43 @@ public class ProjectController {
     }
 
     @PostMapping
-    public ProjectResponseDto addProject(@RequestBody ProjectRequestDto projectRequestDto) {
-        return projectService.addProject(projectRequestDto);
+    public CreateProjectResponseDTO addProject(@RequestBody CreateProjectRequestDTO createProjectRequestDTO) {
+        return projectService.addProject(createProjectRequestDTO);
     }
 
-    @GetMapping("/{id}")
-    public ProjectResponseDto getById(@PathVariable(value = "id") String id) {
+
+
+    @GetMapping("/v1/{projectId}")
+    public ProjectResponseDto getById(@PathVariable(value = "projectId") String id) {
         return projectService.getById(id);
     }
 
-    @PutMapping("/{id}")
-    public ProjectResponseDto updateProject(@PathVariable(name = "id") String id, @RequestBody ProjectRequestDto projectRequestDto) {
-        return projectService.updateProject(id, projectRequestDto);
+    @PutMapping("/v1/{projectId}")
+    public UpdateProjectResponseDTO updateProject(@PathVariable(name = "projectId") UUID projectId,
+                                                  @RequestBody UpdateProjectRequestDTO updateProjectRequestDTO) {
+        updateProjectRequestDTO.setId(projectId);
+        return projectService.updateProject(updateProjectRequestDTO);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteProject(@PathVariable(name = "id") String id) {
+
+
+    @DeleteMapping("/v1/{projectId}")
+    public ResponseEntity<String> deleteProject(@PathVariable(name = "projectId") String id) {
         projectService.deleteProject(id);
         return ResponseEntity.ok("Proje başarıyla silindi: " + id);
     }
-    @GetMapping("/{projectId}/employees")
-    public List<String> getEmployeeNamesByProjectId(@PathVariable String projectId) {
+    @GetMapping("/v1/employees/{projectId}")
+    public List<GetEmployeeNamesByProjectIdResponseDTO> getEmployeeNamesByProjectId(@PathVariable String projectId) {
         return projectService.getEmployeeNamesByProjectId(projectId);
     }
-    @GetMapping("/{projectId}/employeeCount")
-    public Long getCountEmployeesByProjectId(@PathVariable String projectId) {
+
+    @GetMapping("/v1/employeeCount/{projectId}")
+    public GetCountEmployeesByProjectIdResponseDTO getCountEmployeesByProjectId(@PathVariable String projectId) {
         return projectService.getCountEmployeesByProjectId(projectId);
     }
 
-    @GetMapping("/{projectId}/employeesAll")
-    public List<Employee> getFindEmployeesByProjectId(@PathVariable String projectId) {
+    @GetMapping("/v1/employeesAll/{projectId}")
+    public List<GetFindEmployeesByProjectIdResponseDTO> getFindEmployeesByProjectId(@PathVariable String projectId) {
         return projectService.getFindEmployeesByProjectId(projectId);
     }
 

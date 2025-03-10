@@ -2,13 +2,18 @@ package com.example.ysoft.api.controller;
 
 import com.example.ysoft.business.abstracts.EmployeeService;
 import com.example.ysoft.business.abstracts.ProjectService;
+import com.example.ysoft.business.dtos.requests.employee.CreateEmployeeRequestDTO;
 import com.example.ysoft.business.dtos.requests.EmployeeRequestDto;
+import com.example.ysoft.business.dtos.requests.employee.UpdateEmployeeRequestDTO;
+import com.example.ysoft.business.dtos.responses.employee.CreateEmployeeResponseDTO;
 import com.example.ysoft.business.dtos.responses.EmployeeResponseDto;
+import com.example.ysoft.business.dtos.responses.employee.UpdateEmployeeResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/employees")
@@ -23,28 +28,32 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public EmployeeResponseDto addEmployee(@RequestBody EmployeeRequestDto employeeRequestDto) {
-        return employeeService.addEmployee(employeeRequestDto);
+    public CreateEmployeeResponseDTO addEmployee(@RequestBody CreateEmployeeRequestDTO createEmployeeRequestDTO) {
+        return employeeService.addEmployee(createEmployeeRequestDTO);
     }
 
-    @GetMapping("/{id}")
+
+    @GetMapping("/v1/{employeeId}")
     public EmployeeResponseDto getById(@PathVariable String id) {
         return employeeService.getById(id);
     }
 
-    @PutMapping("/{id}")
-    public EmployeeResponseDto updateEmployee(@PathVariable String id, @RequestBody EmployeeRequestDto employeeRequestDto) {
-        return employeeService.updateEmployee(id, employeeRequestDto);
+    @PutMapping("/v1/{employeeId}")
+    public UpdateEmployeeResponseDTO updateEmployee(@PathVariable("employeeId") String id,
+                                                    @RequestBody UpdateEmployeeRequestDTO updateEmployeeRequestDTO) {
+
+        updateEmployeeRequestDTO.setId(UUID.fromString(id));
+        return employeeService.updateEmployee(updateEmployeeRequestDTO);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteEmployee(@PathVariable String id) {
-        employeeService.deleteEmployee(id);
-        return ResponseEntity.ok("Çalışan başarıyla silindi: " + id);
+    @DeleteMapping("/v1/{employeeId}")
+    public ResponseEntity<String> deleteEmployee(@PathVariable String employeeId) {
+        employeeService.deleteEmployee(employeeId);
+        return ResponseEntity.ok("Çalışan başarıyla silindi: " + employeeId);
     }
 
-    @GetMapping("/{id}/fullName")
-    public String getEmployeeFullName(@PathVariable String id) {
-        return employeeService.getFindEmployeeFullNameById(id);
+    @GetMapping("/fullName/{employeeId}")
+    public String getEmployeeFullName(@PathVariable String employeeId) {
+        return employeeService.getFindEmployeeFullNameById(employeeId);
     }
 }

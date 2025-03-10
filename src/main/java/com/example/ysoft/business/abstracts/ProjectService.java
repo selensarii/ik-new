@@ -1,20 +1,24 @@
 package com.example.ysoft.business.abstracts;
 
-import com.example.ysoft.business.dtos.responses.ProjectResponseDto;
+import com.example.ysoft.business.dtos.requests.project.CreateProjectRequestDTO;
+import com.example.ysoft.business.dtos.requests.project.UpdateProjectRequestDTO;
+import com.example.ysoft.business.dtos.responses.*;
 import com.example.ysoft.business.dtos.requests.ProjectRequestDto;
-import com.example.ysoft.entities.Employee;
+import com.example.ysoft.business.dtos.responses.project.*;
 import com.example.ysoft.entities.Project;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface ProjectService {
     List<ProjectResponseDto> getAllProjects();
     Project findById(String id);
-    ProjectResponseDto addProject(ProjectRequestDto projectRequestDto);
     ProjectResponseDto getById(String id);
-    ProjectResponseDto updateProject(String id, ProjectRequestDto projectRequestDto);
     void deleteProject(String id);
-    List<String> getEmployeeNamesByProjectId(String projectId);
-    Long getCountEmployeesByProjectId(String projectId);
-    List<Employee> getFindEmployeesByProjectId(String projectId);
+
+    UpdateProjectResponseDTO updateProject(UpdateProjectRequestDTO updateProjectRequestDTO);
+    CreateProjectResponseDTO addProject(CreateProjectRequestDTO createProjectRequestDTO);
+    List<GetEmployeeNamesByProjectIdResponseDTO> getEmployeeNamesByProjectId(String projectId);
+    GetCountEmployeesByProjectIdResponseDTO getCountEmployeesByProjectId(String projectId);
+    List<GetFindEmployeesByProjectIdResponseDTO> getFindEmployeesByProjectId(String projectId);
 }

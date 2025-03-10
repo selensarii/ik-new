@@ -2,8 +2,12 @@ package com.example.ysoft.business.concretes;
 
 import com.example.ysoft.business.abstracts.EmployeeService;
 import com.example.ysoft.business.abstracts.ProjectService;
+import com.example.ysoft.business.dtos.requests.employee.CreateEmployeeRequestDTO;
 import com.example.ysoft.business.dtos.requests.EmployeeRequestDto;
+import com.example.ysoft.business.dtos.requests.employee.UpdateEmployeeRequestDTO;
+import com.example.ysoft.business.dtos.responses.employee.CreateEmployeeResponseDTO;
 import com.example.ysoft.business.dtos.responses.EmployeeResponseDto;
+import com.example.ysoft.business.dtos.responses.employee.UpdateEmployeeResponseDTO;
 import com.example.ysoft.entities.Employee;
 import com.example.ysoft.entities.Project;
 import com.example.ysoft.library.EmployeeNotFoundException;
@@ -28,52 +32,71 @@ public class EmployeeManager implements EmployeeService {
     }
 
     @Override
-    public EmployeeResponseDto addEmployee(EmployeeRequestDto employeeRequestDto) {
-        UUID projectId = employeeRequestDto.getProjectId(); // Eğer getProjectId() zaten UUID döndürüyorsa
+    public CreateEmployeeResponseDTO addEmployee(CreateEmployeeRequestDTO createEmployeeRequestDTO) {
+        Project project = projectService.findById(createEmployeeRequestDTO.getProjectId().toString());
+        Employee employee = toEntity(createEmployeeRequestDTO, project);
+        Employee savedEmployee = employeeRepository.save(employee);
 
-        // Project'i UUID ile bulma
-        Project project = projectService.findById(projectId.toString()); // Eğer findById() String kabul ediyorsa
+        return toCreateEmployeeResponse(savedEmployee);
+    }
 
-        Employee employee = Employee.builder()
-                .fullName(employeeRequestDto.getFullName())
-                .identityNumber(employeeRequestDto.getIdentityNumber())
-                .position(employeeRequestDto.getPosition())
-                .salary(employeeRequestDto.getSalary())
+    private Employee toEntity(CreateEmployeeRequestDTO createEmployeeRequestDTO, Project project) {
+        return Employee.builder()
+                .fullName(createEmployeeRequestDTO.getFullName())
+                .position(createEmployeeRequestDTO.getPosition())
+                .identityNumber(createEmployeeRequestDTO.getIdentityNumber())
+                .salary(createEmployeeRequestDTO.getSalary())
                 .project(project)
                 .build();
-
-        Employee savedEmployee = employeeRepository.save(employee);
-        return EmployeeResponseDto.toResponse(savedEmployee);
     }
+
+    private CreateEmployeeResponseDTO toCreateEmployeeResponse(Employee savedEmployee) {
+        return CreateEmployeeResponseDTO.builder()
+                .id(savedEmployee.getId())
+                .fullName(savedEmployee.getFullName())
+                .position(savedEmployee.getPosition())
+                .identityNumber(savedEmployee.getIdentityNumber())
+                .salary(savedEmployee.getSalary())
+                .projectId(savedEmployee.getProject() != null ? savedEmployee.getProject().getId() : null)
+                .build();
+    }
+
 
     @Override
     public EmployeeResponseDto getById(String id) {
-        UUID employeeId = UUID.fromString(id); // String'i UUID'ye dönüştürme
+        UUID employeeId = UUID.fromString(id);
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new EmployeeNotFoundException("Employee bulunamadı"));
         return EmployeeResponseDto.toResponse(employee);
     }
 
     @Override
-    public EmployeeResponseDto updateEmployee(String id, EmployeeRequestDto employeeRequestDto) {
-        UUID employeeId = UUID.fromString(id); // String'i UUID'ye dönüştürme
+    public UpdateEmployeeResponseDTO updateEmployee(UpdateEmployeeRequestDTO updateEmployeeRequestDTO) {
+        UUID employeeId = updateEmployeeRequestDTO.getId();
+
         return employeeRepository.findById(employeeId)
                 .map(existingEmployee -> {
-                    Project project = projectService.findById(String.valueOf(employeeRequestDto.getProjectId())); // Projeyi bulma
-                    existingEmployee.setFullName(employeeRequestDto.getFullName());
-                    existingEmployee.setPosition(employeeRequestDto.getPosition());
-                    existingEmployee.setIdentityNumber(employeeRequestDto.getIdentityNumber());
-                    existingEmployee.setSalary(employeeRequestDto.getSalary());
+                    UUID projectId = updateEmployeeRequestDTO.getProjectId();
+                    Project project = projectService.findById(String.valueOf(projectId));
+
+                    // Çalışan bilgilerini güncelliyoruz
+                    existingEmployee.setFullName(updateEmployeeRequestDTO.getFullName());
+                    existingEmployee.setPosition(updateEmployeeRequestDTO.getPosition());
+                    existingEmployee.setIdentityNumber(updateEmployeeRequestDTO.getIdentityNumber());
+                    existingEmployee.setSalary(updateEmployeeRequestDTO.getSalary());
                     existingEmployee.setProject(project);
+
                     return employeeRepository.save(existingEmployee);
                 })
-                .map(EmployeeResponseDto::toResponse)
-                .orElseThrow(() -> new EmployeeNotFoundException("Employee güncellenemedi"));
+                .map(UpdateEmployeeResponseDTO::fromEmployee)
+                .orElseThrow(() -> new EmployeeNotFoundException("Çalışan bulunamadı veya güncelleme başarısız"));
     }
+
+
 
     @Override
     public void deleteEmployee(String id) {
-        UUID employeeId = UUID.fromString(id); // String'i UUID'ye dönüştürme
+        UUID employeeId = UUID.fromString(id);
         employeeRepository.deleteById(employeeId);
     }
     @Override

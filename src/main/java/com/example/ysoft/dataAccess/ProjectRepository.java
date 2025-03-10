@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface ProjectRepository extends JpaRepository<Project, UUID> {
 
-    @Query(value= "SELECT e.fullName FROM Employee e WHERE e.project.id = :projectId")
+    @Query("SELECT e.fullName FROM Employee e JOIN e.project p WHERE p.id = :projectId")
     List<String> findEmployeeNamesByProjectId(@Param("projectId") UUID projectId);
 
     @Query("SELECT COUNT(e) FROM Employee e WHERE e.project.id = :projectId")

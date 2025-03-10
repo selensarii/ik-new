@@ -1,16 +1,16 @@
-package com.example.ysoft.business.dtos.requests;
+package com.example.ysoft.business.dtos.requests.project;
 
-import lombok.*;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.UUID;
 
-@Setter
 @Getter
-@NoArgsConstructor
+@Setter
 @AllArgsConstructor
-@Builder
-@ToString
-public class ProjectRequestDto {
+public class UpdateProjectRequestDTO {
     private UUID id;
     private String name;
     private Long maxEmployee;
