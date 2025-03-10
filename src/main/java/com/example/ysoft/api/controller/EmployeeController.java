@@ -42,4 +42,9 @@ public class EmployeeController {
         employeeService.deleteEmployee(id);
         return ResponseEntity.ok("Çalışan başarıyla silindi: " + id);
     }
+
+    @GetMapping("/{id}/fullName")
+    public String getEmployeeFullName(@PathVariable String id) {
+        return employeeService.getFindEmployeeFullNameById(id);
+    }
 }

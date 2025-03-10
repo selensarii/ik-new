@@ -76,4 +76,8 @@ public class EmployeeManager implements EmployeeService {
         UUID employeeId = UUID.fromString(id); // String'i UUID'ye dönüştürme
         employeeRepository.deleteById(employeeId);
     }
+    @Override
+    public String getFindEmployeeFullNameById(String id) {
+        return employeeRepository.findEmployeeFullNameById(UUID.fromString(id));
+    }
 }
