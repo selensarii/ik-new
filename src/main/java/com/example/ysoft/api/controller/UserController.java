@@ -1,9 +1,8 @@
 package com.example.ysoft.api.controller;
 
 import com.example.ysoft.business.abstracts.UserService;
-import com.example.ysoft.business.dtos.requests.UserRequest;
-import com.example.ysoft.business.dtos.responses.UserResponse;
-import lombok.RequiredArgsConstructor;
+import com.example.ysoft.business.dtos.requests.UserRequestDto;
+import com.example.ysoft.business.dtos.responses.UserResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,23 +19,23 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserResponse> getAll() {
+    public List<UserResponseDto> getAll() {
         return userService.getAllUsers();
     }
 
     @PostMapping
-    public UserResponse addUser(@RequestBody UserRequest userRequest) {
-        return userService.addUser(userRequest);
+    public UserResponseDto addUser(@RequestBody UserRequestDto userRequestDto) {
+        return userService.addUser(userRequestDto);
     }
 
     @GetMapping("/{id}")
-    public UserResponse getById(@PathVariable(value = "id") String id) {
+    public UserResponseDto getById(@PathVariable(value = "id") String id) {
         return userService.getById(id);
     }
 
     @PutMapping("/{id}")
-    public UserResponse updateUser(@PathVariable(name = "id") String id, @RequestBody UserRequest userRequest) {
-        return userService.updateUser(id, userRequest);
+    public UserResponseDto updateUser(@PathVariable(name = "id") String id, @RequestBody UserRequestDto userRequestDto) {
+        return userService.updateUser(id, userRequestDto);
     }
 
     @DeleteMapping("/{id}")

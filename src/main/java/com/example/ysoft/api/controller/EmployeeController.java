@@ -2,8 +2,8 @@ package com.example.ysoft.api.controller;
 
 import com.example.ysoft.business.abstracts.EmployeeService;
 import com.example.ysoft.business.abstracts.ProjectService;
-import com.example.ysoft.business.dtos.requests.EmployeeRequest;
-import com.example.ysoft.business.dtos.responses.EmployeeResponse;
+import com.example.ysoft.business.dtos.requests.EmployeeRequestDto;
+import com.example.ysoft.business.dtos.responses.EmployeeResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,23 +18,23 @@ public class EmployeeController {
     private final ProjectService projectService;
 
     @GetMapping
-    public List<EmployeeResponse> getAllEmployees() {
+    public List<EmployeeResponseDto> getAllEmployees() {
         return employeeService.getAllEmployees();
     }
 
     @PostMapping
-    public EmployeeResponse addEmployee(@RequestBody EmployeeRequest employeeRequest) {
-        return employeeService.addEmployee(employeeRequest);
+    public EmployeeResponseDto addEmployee(@RequestBody EmployeeRequestDto employeeRequestDto) {
+        return employeeService.addEmployee(employeeRequestDto);
     }
 
     @GetMapping("/{id}")
-    public EmployeeResponse getById(@PathVariable String id) {
+    public EmployeeResponseDto getById(@PathVariable String id) {
         return employeeService.getById(id);
     }
 
     @PutMapping("/{id}")
-    public EmployeeResponse updateEmployee(@PathVariable String id, @RequestBody EmployeeRequest employeeRequest) {
-        return employeeService.updateEmployee(id, employeeRequest);
+    public EmployeeResponseDto updateEmployee(@PathVariable String id, @RequestBody EmployeeRequestDto employeeRequestDto) {
+        return employeeService.updateEmployee(id, employeeRequestDto);
     }
 
     @DeleteMapping("/{id}")

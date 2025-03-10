@@ -1,8 +1,8 @@
 package com.example.ysoft.business.concretes;
 
 import com.example.ysoft.business.abstracts.ProjectService;
-import com.example.ysoft.business.dtos.responses.ProjectResponse;
-import com.example.ysoft.business.dtos.requests.ProjectRequest;
+import com.example.ysoft.business.dtos.responses.ProjectResponseDto;
+import com.example.ysoft.business.dtos.requests.ProjectRequestDto;
 import com.example.ysoft.dataAccess.ProjectRepository;
 import com.example.ysoft.entities.Employee;
 import com.example.ysoft.entities.Project;
@@ -21,7 +21,7 @@ public class ProjectManager implements ProjectService {
     private final ProjectRepository projectRepository;
 
     @Override
-    public List<ProjectResponse> getAllProjects() {
+    public List<ProjectResponseDto> getAllProjects() {
         return projectRepository.findAll().stream().map(this::toResponse).collect(Collectors.toList());
     }
 
@@ -33,13 +33,13 @@ public class ProjectManager implements ProjectService {
     }
 
     @Override
-    public ProjectResponse addProject(ProjectRequest projectRequest) {
-        Project savedProject = projectRepository.save(toEntity(projectRequest));
+    public ProjectResponseDto addProject(ProjectRequestDto projectRequestDto) {
+        Project savedProject = projectRepository.save(toEntity(projectRequestDto));
         return toResponse(savedProject);
     }
 
     @Override
-    public ProjectResponse getById(String id) {
+    public ProjectResponseDto getById(String id) {
         UUID projectId = UUID.fromString(id); // String'i UUID'ye dönüştürme
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException("Project id bulunamadı"));
@@ -47,11 +47,11 @@ public class ProjectManager implements ProjectService {
     }
 
     @Override
-    public ProjectResponse updateProject(String id, ProjectRequest projectRequest) {
+    public ProjectResponseDto updateProject(String id, ProjectRequestDto projectRequestDto) {
         UUID projectId = UUID.fromString(id); // String'i UUID'ye dönüştürme
         return projectRepository.findById(projectId)
                 .map(existingProject -> {
-                    Project updatedProject = toEntity(projectRequest);
+                    Project updatedProject = toEntity(projectRequestDto);
                     updatedProject.setId(existingProject.getId());
                     return projectRepository.save(updatedProject);
                 })
@@ -81,8 +81,8 @@ public class ProjectManager implements ProjectService {
         return projectRepository.findEmployeesByProjectId(projectUuid);
     }
 
-    private ProjectResponse toResponse(Project project) {
-        return ProjectResponse.builder()
+    private ProjectResponseDto toResponse(Project project) {
+        return ProjectResponseDto.builder()
                 .id(project.getId())
                 .name(project.getName())
                 .maxEmployee(project.getMaxEmployee())
@@ -91,12 +91,12 @@ public class ProjectManager implements ProjectService {
                 .build();
     }
 
-    private Project toEntity(ProjectRequest projectRequest) {
+    private Project toEntity(ProjectRequestDto projectRequestDto) {
         return Project.builder()
-                .name(projectRequest.getName())
-                .minEmployee(projectRequest.getMinEmployee())
-                .maxEmployee(projectRequest.getMaxEmployee())
-                .totalEmployee(projectRequest.getTotalEmployee())
+                .name(projectRequestDto.getName())
+                .minEmployee(projectRequestDto.getMinEmployee())
+                .maxEmployee(projectRequestDto.getMaxEmployee())
+                .totalEmployee(projectRequestDto.getTotalEmployee())
                 .build();
     }
 }

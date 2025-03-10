@@ -1,14 +1,14 @@
 package com.example.ysoft.business.abstracts;
 
-import com.example.ysoft.business.dtos.requests.EmployeeRequest;
-import com.example.ysoft.business.dtos.responses.EmployeeResponse;
+import com.example.ysoft.business.dtos.requests.EmployeeRequestDto;
+import com.example.ysoft.business.dtos.responses.EmployeeResponseDto;
 
 import java.util.List;
 
 public interface EmployeeService {
-    List<EmployeeResponse> getAllEmployees();
-    EmployeeResponse addEmployee(EmployeeRequest employeeRequest);
-    EmployeeResponse getById(String id);
-    EmployeeResponse updateEmployee(String id, EmployeeRequest employeeRequest);
+    List<EmployeeResponseDto> getAllEmployees();
+    EmployeeResponseDto addEmployee(EmployeeRequestDto employeeRequestDto);
+    EmployeeResponseDto getById(String id);
+    EmployeeResponseDto updateEmployee(String id, EmployeeRequestDto employeeRequestDto);
     void deleteEmployee(String id);
 }

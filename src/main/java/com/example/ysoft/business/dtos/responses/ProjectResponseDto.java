@@ -1,8 +1,5 @@
 package com.example.ysoft.business.dtos.responses;
 
-import com.example.ysoft.entities.Project;
-import lombok.*;
-
 import lombok.*;
 
 import java.util.UUID;
@@ -13,7 +10,7 @@ import java.util.UUID;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProjectResponse {
+public class ProjectResponseDto {
     private UUID id;
     private String name;
     private Long maxEmployee;

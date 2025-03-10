@@ -10,7 +10,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @ToString
-public class EmployeeRequest {
+public class EmployeeRequestDto {
     private String fullName;
     private String position;
     private String identityNumber;

@@ -1,14 +1,14 @@
 package com.example.ysoft.business.abstracts;
 
-import com.example.ysoft.business.dtos.requests.UserRequest;
-import com.example.ysoft.business.dtos.responses.UserResponse;
+import com.example.ysoft.business.dtos.requests.UserRequestDto;
+import com.example.ysoft.business.dtos.responses.UserResponseDto;
 
 import java.util.List;
 
 public interface UserService {
-    List<UserResponse> getAllUsers();
-    UserResponse addUser(UserRequest userRequest);
-    UserResponse getById(String id);
-    UserResponse updateUser(String id, UserRequest userRequest);
+    List<UserResponseDto> getAllUsers();
+    UserResponseDto addUser(UserRequestDto userRequestDto);
+    UserResponseDto getById(String id);
+    UserResponseDto updateUser(String id, UserRequestDto userRequestDto);
     void deleteUser(String id);
 }

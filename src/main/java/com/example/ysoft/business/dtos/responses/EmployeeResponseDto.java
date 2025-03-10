@@ -11,7 +11,7 @@ import java.util.UUID;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class EmployeeResponse {
+public class EmployeeResponseDto {
     private UUID id;
     private String fullName;
     private String position;
@@ -19,8 +19,8 @@ public class EmployeeResponse {
     private String salary;
     private UUID projectId;
 
-    public static EmployeeResponse toResponse(Employee employee) {
-        return EmployeeResponse.builder()
+    public static EmployeeResponseDto toResponse(Employee employee) {
+        return EmployeeResponseDto.builder()
                 .id(employee.getId())
                 .fullName(employee.getFullName())
                 .position(employee.getPosition())

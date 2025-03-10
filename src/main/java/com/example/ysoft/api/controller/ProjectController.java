@@ -1,8 +1,8 @@
 package com.example.ysoft.api.controller;
 
 import com.example.ysoft.business.abstracts.ProjectService;
-import com.example.ysoft.business.dtos.requests.ProjectRequest;
-import com.example.ysoft.business.dtos.responses.ProjectResponse;
+import com.example.ysoft.business.dtos.requests.ProjectRequestDto;
+import com.example.ysoft.business.dtos.responses.ProjectResponseDto;
 import com.example.ysoft.entities.Employee;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,23 +18,23 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @GetMapping
-    public List<ProjectResponse> getAllProjects() {
+    public List<ProjectResponseDto> getAllProjects() {
         return projectService.getAllProjects();
     }
 
     @PostMapping
-    public ProjectResponse addProject(@RequestBody ProjectRequest projectRequest) {
-        return projectService.addProject(projectRequest);
+    public ProjectResponseDto addProject(@RequestBody ProjectRequestDto projectRequestDto) {
+        return projectService.addProject(projectRequestDto);
     }
 
     @GetMapping("/{id}")
-    public ProjectResponse getById(@PathVariable(value = "id") String id) {
+    public ProjectResponseDto getById(@PathVariable(value = "id") String id) {
         return projectService.getById(id);
     }
 
     @PutMapping("/{id}")
-    public ProjectResponse updateProject(@PathVariable(name = "id") String id, @RequestBody ProjectRequest projectRequest) {
-        return projectService.updateProject(id, projectRequest);
+    public ProjectResponseDto updateProject(@PathVariable(name = "id") String id, @RequestBody ProjectRequestDto projectRequestDto) {
+        return projectService.updateProject(id, projectRequestDto);
     }
 
     @DeleteMapping("/{id}")

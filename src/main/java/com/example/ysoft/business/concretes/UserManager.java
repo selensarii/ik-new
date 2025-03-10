@@ -1,8 +1,8 @@
 package com.example.ysoft.business.concretes;
 
 import com.example.ysoft.business.abstracts.UserService;
-import com.example.ysoft.business.dtos.requests.UserRequest;
-import com.example.ysoft.business.dtos.responses.UserResponse;
+import com.example.ysoft.business.dtos.requests.UserRequestDto;
+import com.example.ysoft.business.dtos.responses.UserResponseDto;
 import com.example.ysoft.dataAccess.UserRepository;
 import com.example.ysoft.entities.User;
 import com.example.ysoft.library.UserNotFoundException;
@@ -18,18 +18,18 @@ public class UserManager implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public List<UserResponse> getAllUsers() {
+    public List<UserResponseDto> getAllUsers() {
         return userRepository.findAll().stream().map(this::toResponse).toList();
     }
 
     @Override
-    public UserResponse addUser(UserRequest userRequest) {
-        User user = toEntity(userRequest);
+    public UserResponseDto addUser(UserRequestDto userRequestDto) {
+        User user = toEntity(userRequestDto);
         return toResponse(userRepository.save(user));
     }
 
     @Override
-    public UserResponse getById(String id) {
+    public UserResponseDto getById(String id) {
         UUID userId = UUID.fromString(id);  // String'den UUID'ye dönüştürme
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User bulunamadı"));
@@ -37,12 +37,12 @@ public class UserManager implements UserService {
     }
 
     @Override
-    public UserResponse updateUser(String id, UserRequest userRequest) {
+    public UserResponseDto updateUser(String id, UserRequestDto userRequestDto) {
         UUID userId = UUID.fromString(id);  // String'den UUID'ye dönüştürme
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User Bulunamadı"));
-        user.setNickName(userRequest.getNickName());
-        user.setPassword(userRequest.getPassword());
+        user.setNickName(userRequestDto.getNickName());
+        user.setPassword(userRequestDto.getPassword());
         return toResponse(userRepository.save(user));
     }
 
@@ -52,18 +52,18 @@ public class UserManager implements UserService {
         userRepository.deleteById(userId);
     }
 
-    private UserResponse toResponse(User user) {
-        return UserResponse.builder()
+    private UserResponseDto toResponse(User user) {
+        return UserResponseDto.builder()
                 .id(user.getId().toString())  // UUID'yi String'e dönüştürmek
                 .password(user.getPassword())
                 .nickName(user.getNickName())
                 .build();
     }
 
-    private User toEntity(UserRequest userRequest) {
+    private User toEntity(UserRequestDto userRequestDto) {
         return User.builder()
-                .nickName(userRequest.getNickName())
-                .password(userRequest.getPassword())
+                .nickName(userRequestDto.getNickName())
+                .password(userRequestDto.getPassword())
                 .build();
     }
 }

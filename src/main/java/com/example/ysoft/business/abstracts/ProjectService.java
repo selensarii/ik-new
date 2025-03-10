@@ -1,18 +1,18 @@
 package com.example.ysoft.business.abstracts;
 
-import com.example.ysoft.business.dtos.responses.ProjectResponse;
-import com.example.ysoft.business.dtos.requests.ProjectRequest;
+import com.example.ysoft.business.dtos.responses.ProjectResponseDto;
+import com.example.ysoft.business.dtos.requests.ProjectRequestDto;
 import com.example.ysoft.entities.Employee;
 import com.example.ysoft.entities.Project;
 
 import java.util.List;
 
 public interface ProjectService {
-    List<ProjectResponse> getAllProjects();
+    List<ProjectResponseDto> getAllProjects();
     Project findById(String id);
-    ProjectResponse addProject(ProjectRequest projectRequest);
-    ProjectResponse getById(String id);
-    ProjectResponse updateProject(String id, ProjectRequest projectRequest);
+    ProjectResponseDto addProject(ProjectRequestDto projectRequestDto);
+    ProjectResponseDto getById(String id);
+    ProjectResponseDto updateProject(String id, ProjectRequestDto projectRequestDto);
     void deleteProject(String id);
     List<String> getEmployeeNamesByProjectId(String projectId);
     Long getCountEmployeesByProjectId(String projectId);
