@@ -30,34 +30,32 @@ public class ProjectController {
         return projectService.addProject(createProjectRequestDTO);
     }
 
-    @GetMapping("/v1/{projectId}")
+    @GetMapping("/v1/projectId/{projectId}")
     public ProjectResponseDto getById(@PathVariable(value = "projectId") String projectId) {
         return projectService.getById(projectId);
     }
 
-    @PutMapping("/v1/{projectId}")
-    public UpdateProjectResponseDTO updateProject(@PathVariable(name = "projectId") UUID projectId,
-                                                  @RequestBody UpdateProjectRequestDTO updateProjectRequestDTO) {
-        updateProjectRequestDTO.setId(projectId);
+    @PutMapping("/v1/projectId")
+    public UpdateProjectResponseDTO updateProject(@RequestBody UpdateProjectRequestDTO updateProjectRequestDTO) {
         return projectService.updateProject(updateProjectRequestDTO);
     }
 
-    @DeleteMapping("/v1/{projectId}")
+    @DeleteMapping("/v1/projectId/{projectId}")
     public ResponseEntity<String> deleteProject(@PathVariable(name = "projectId") String projectId) {
         projectService.deleteProject(projectId);
         return ResponseEntity.ok("Proje başarıyla silindi: " + projectId);
     }
-    @GetMapping("/v1/employees/{projectId}")
+    @GetMapping("/v1/employees/projectId/{projectId}")
     public List<GetEmployeeNamesByProjectIdResponseDTO> getEmployeeNamesByProjectId(@PathVariable String projectId) {
-        return projectService.getEmployeeNamesByProjectId(projectId);
+        return projectService.getFindEmployeeNamesByProjectId(projectId);
     }
 
-    @GetMapping("/v1/employeeCount/{projectId}")
+    @GetMapping("/v1/employeeCount/projectId/{projectId}")
     public GetCountEmployeesByProjectIdResponseDTO getCountEmployeesByProjectId(@PathVariable String projectId) {
         return projectService.getCountEmployeesByProjectId(projectId);
     }
 
-    @GetMapping("/v1/employeesAll/{projectId}")
+    @GetMapping("/v1/employeesAll/projectId/{projectId}")
     public List<GetFindEmployeesByProjectIdResponseDTO> getFindEmployeesByProjectId(@PathVariable String projectId) {
         return projectService.getFindEmployeesByProjectId(projectId);
     }

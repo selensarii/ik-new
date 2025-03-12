@@ -4,7 +4,6 @@ import com.example.ysoft.business.abstracts.ProjectService;
 import com.example.ysoft.business.dtos.requests.project.CreateProjectRequestDTO;
 import com.example.ysoft.business.dtos.requests.project.UpdateProjectRequestDTO;
 import com.example.ysoft.business.dtos.responses.*;
-import com.example.ysoft.business.dtos.requests.ProjectRequestDto;
 import com.example.ysoft.business.dtos.responses.project.*;
 import com.example.ysoft.dataAccess.ProjectRepository;
 import com.example.ysoft.entities.Employee;
@@ -20,7 +19,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class ProjectManager implements ProjectService {
+public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
 
@@ -78,15 +77,13 @@ public class ProjectManager implements ProjectService {
     }
 
     @Override
-    public List<GetEmployeeNamesByProjectIdResponseDTO> getEmployeeNamesByProjectId(String projectId) {
+    public List<GetEmployeeNamesByProjectIdResponseDTO> getFindEmployeeNamesByProjectId(String projectId) {
         UUID projectUuid = UUID.fromString(projectId);
-        List<Employee> employees = projectRepository.findEmployeesByProjectId(projectUuid);
+        List<String> employeeNames = projectRepository.findEmployeeNamesByProjectId(projectUuid);
 
-        List<GetEmployeeNamesByProjectIdResponseDTO> dtoList2 = new ArrayList<>();
-        for (Employee emp : employees) {
-            dtoList2.add(new GetEmployeeNamesByProjectIdResponseDTO(emp.getFullName()));
-        }
-        return dtoList2;
+        return employeeNames.stream()
+                .map(GetEmployeeNamesByProjectIdResponseDTO::new)
+                .collect(Collectors.toList());
     }
 
 

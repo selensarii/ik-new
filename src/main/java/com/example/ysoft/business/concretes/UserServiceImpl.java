@@ -1,7 +1,6 @@
 package com.example.ysoft.business.concretes;
 
 import com.example.ysoft.business.abstracts.UserService;
-import com.example.ysoft.business.dtos.requests.UserRequestDto;
 import com.example.ysoft.business.dtos.requests.user.CreateUserRequestDTO;
 import com.example.ysoft.business.dtos.requests.user.UpdateUserRequestDTO;
 import com.example.ysoft.business.dtos.responses.UserResponseDto;
@@ -18,7 +17,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class UserManager implements UserService {
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override

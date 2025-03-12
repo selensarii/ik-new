@@ -3,7 +3,6 @@ package com.example.ysoft.business.concretes;
 import com.example.ysoft.business.abstracts.EmployeeService;
 import com.example.ysoft.business.abstracts.ProjectService;
 import com.example.ysoft.business.dtos.requests.employee.CreateEmployeeRequestDTO;
-import com.example.ysoft.business.dtos.requests.EmployeeRequestDto;
 import com.example.ysoft.business.dtos.requests.employee.UpdateEmployeeRequestDTO;
 import com.example.ysoft.business.dtos.responses.employee.CreateEmployeeResponseDTO;
 import com.example.ysoft.business.dtos.responses.EmployeeResponseDto;
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class EmployeeManager implements EmployeeService {
+public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final ProjectService projectService;

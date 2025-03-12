@@ -33,26 +33,19 @@ public class EmployeeController {
     }
 
 
-    @GetMapping("/v1/{employeeId}")
-    public EmployeeResponseDto getById(@PathVariable String employeeId) {
-        return employeeService.getById(employeeId);
-    }
-
-    @PutMapping("/v1/{employeeId}")
-    public UpdateEmployeeResponseDTO updateEmployee(@PathVariable("employeeId") String employeeId,
-                                                    @RequestBody UpdateEmployeeRequestDTO updateEmployeeRequestDTO) {
-
-        updateEmployeeRequestDTO.setId(UUID.fromString(employeeId));
+    @PutMapping("/v1/employeeId")
+    public UpdateEmployeeResponseDTO updateEmployee(@RequestBody UpdateEmployeeRequestDTO updateEmployeeRequestDTO) {
         return employeeService.updateEmployee(updateEmployeeRequestDTO);
     }
 
-    @DeleteMapping("/v1/{employeeId}")
+
+    @DeleteMapping("/v1/employeeId/{employeeId}")
     public ResponseEntity<String> deleteEmployee(@PathVariable String employeeId) {
         employeeService.deleteEmployee(employeeId);
         return ResponseEntity.ok("Çalışan başarıyla silindi: " + employeeId);
     }
 
-    @GetMapping("/v1/fullName/{employeeId}")
+    @GetMapping("/v1/fullName/employeeId/{employeeId}")
     public String getEmployeeFullName(@PathVariable String employeeId) {
         return employeeService.getFindEmployeeFullNameById(employeeId);
     }

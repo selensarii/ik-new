@@ -33,18 +33,18 @@ public class UserController {
         return userService.addUser(createUserRequestDTO);
     }
 
-    @GetMapping("/v1/{userId}")
+    @GetMapping("/v1/userId/{userId}")
     public UserResponseDto getById(@PathVariable(value = "userId") String userId) {
         return userService.getById(userId);
     }
 
-    @PutMapping("/v1/{userId}")
-    public UpdateUserResponseDTO updateUser(@PathVariable UUID userId, @RequestBody UpdateUserRequestDTO updateUserRequestDTO) {
-        updateUserRequestDTO.setId(userId);
+    @PutMapping("/v1/userId")
+    public UpdateUserResponseDTO updateUser(@RequestBody UpdateUserRequestDTO updateUserRequestDTO) {
         return userService.updateUser(updateUserRequestDTO);
     }
 
-    @DeleteMapping("/v1/{userId}")
+
+    @DeleteMapping("/v1/userId/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable(name = "userId") String userId){
         userService.deleteUser(userId);
         String message = "Kullanıcı başarıyla silindi."+ userId;
