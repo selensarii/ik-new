@@ -30,11 +30,9 @@ public class ProjectController {
         return projectService.addProject(createProjectRequestDTO);
     }
 
-
-
     @GetMapping("/v1/{projectId}")
-    public ProjectResponseDto getById(@PathVariable(value = "projectId") String id) {
-        return projectService.getById(id);
+    public ProjectResponseDto getById(@PathVariable(value = "projectId") String projectId) {
+        return projectService.getById(projectId);
     }
 
     @PutMapping("/v1/{projectId}")
@@ -45,9 +43,9 @@ public class ProjectController {
     }
 
     @DeleteMapping("/v1/{projectId}")
-    public ResponseEntity<String> deleteProject(@PathVariable(name = "projectId") String id) {
-        projectService.deleteProject(id);
-        return ResponseEntity.ok("Proje başarıyla silindi: " + id);
+    public ResponseEntity<String> deleteProject(@PathVariable(name = "projectId") String projectId) {
+        projectService.deleteProject(projectId);
+        return ResponseEntity.ok("Proje başarıyla silindi: " + projectId);
     }
     @GetMapping("/v1/employees/{projectId}")
     public List<GetEmployeeNamesByProjectIdResponseDTO> getEmployeeNamesByProjectId(@PathVariable String projectId) {

@@ -34,15 +34,15 @@ public class EmployeeController {
 
 
     @GetMapping("/v1/{employeeId}")
-    public EmployeeResponseDto getById(@PathVariable String id) {
-        return employeeService.getById(id);
+    public EmployeeResponseDto getById(@PathVariable String employeeId) {
+        return employeeService.getById(employeeId);
     }
 
     @PutMapping("/v1/{employeeId}")
-    public UpdateEmployeeResponseDTO updateEmployee(@PathVariable("employeeId") String id,
+    public UpdateEmployeeResponseDTO updateEmployee(@PathVariable("employeeId") String employeeId,
                                                     @RequestBody UpdateEmployeeRequestDTO updateEmployeeRequestDTO) {
 
-        updateEmployeeRequestDTO.setId(UUID.fromString(id));
+        updateEmployeeRequestDTO.setId(UUID.fromString(employeeId));
         return employeeService.updateEmployee(updateEmployeeRequestDTO);
     }
 
@@ -52,7 +52,7 @@ public class EmployeeController {
         return ResponseEntity.ok("Çalışan başarıyla silindi: " + employeeId);
     }
 
-    @GetMapping("/fullName/{employeeId}")
+    @GetMapping("/v1/fullName/{employeeId}")
     public String getEmployeeFullName(@PathVariable String employeeId) {
         return employeeService.getFindEmployeeFullNameById(employeeId);
     }

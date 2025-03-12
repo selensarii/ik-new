@@ -34,8 +34,8 @@ public class UserController {
     }
 
     @GetMapping("/v1/{userId}")
-    public UserResponseDto getById(@PathVariable(value = "userId") String id) {
-        return userService.getById(id);
+    public UserResponseDto getById(@PathVariable(value = "userId") String userId) {
+        return userService.getById(userId);
     }
 
     @PutMapping("/v1/{userId}")
@@ -44,12 +44,10 @@ public class UserController {
         return userService.updateUser(updateUserRequestDTO);
     }
 
-
-
     @DeleteMapping("/v1/{userId}")
-    public ResponseEntity<String> deleteUser(@PathVariable(name = "userId") String id){
-        userService.deleteUser(id);
-        String message = "Kullanıcı başarıyla silindi."+ id;
+    public ResponseEntity<String> deleteUser(@PathVariable(name = "userId") String userId){
+        userService.deleteUser(userId);
+        String message = "Kullanıcı başarıyla silindi."+ userId;
         return ResponseEntity.ok(message);
     }
 }
