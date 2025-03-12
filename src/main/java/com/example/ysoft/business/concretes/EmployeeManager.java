@@ -56,7 +56,6 @@ public class EmployeeManager implements EmployeeService {
                     UUID projectId = updateEmployeeRequestDTO.getProjectId();
                     Project project = projectService.findById(String.valueOf(projectId));
 
-                    // Çalışan bilgilerini güncelliyoruz
                     existingEmployee.setFullName(updateEmployeeRequestDTO.getFullName());
                     existingEmployee.setPosition(updateEmployeeRequestDTO.getPosition());
                     existingEmployee.setIdentityNumber(updateEmployeeRequestDTO.getIdentityNumber());
@@ -66,10 +65,8 @@ public class EmployeeManager implements EmployeeService {
                     return employeeRepository.save(existingEmployee);
                 })
                 .map(UpdateEmployeeResponseDTO::fromEmployee)
-                .orElseThrow(() -> new EmployeeNotFoundException("Çalışan bulunamadı veya güncelleme başarısız"));
+                .orElseThrow(() -> new EmployeeNotFoundException("Çalışan bulunamadı"));
     }
-
-
 
     @Override
     public void deleteEmployee(String id) {

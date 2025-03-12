@@ -47,7 +47,7 @@ public class ProjectManager implements ProjectService {
 
     @Override
     public ProjectResponseDto getById(String id) {
-        UUID projectId = UUID.fromString(id); // String'i UUID'ye dönüştürme
+        UUID projectId = UUID.fromString(id);
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException("Project id bulunamadı"));
         return toResponse(project);

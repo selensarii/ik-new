@@ -28,13 +28,13 @@ public class UserManager implements UserService {
 
     @Override
     public CreateUserResponseDTO addUser(CreateUserRequestDTO createUserRequestDTO) {
-        User user = toUserEntity(createUserRequestDTO); // Ensure correct mapping
+        User user = toUserEntity(createUserRequestDTO);
         User savedUser = userRepository.save(user);
-        return toUserResponse(savedUser); // Ensure correct response conversion
+        return toUserResponse(savedUser);
     }
     //dönüşüm
     private User toUserEntity(CreateUserRequestDTO dto) {
-        return new User(dto.getNickName(), dto.getPassword()); // Ensure proper constructor exists
+        return new User(dto.getNickName(), dto.getPassword());
     }
 
     private CreateUserResponseDTO toUserResponse(User user) {
