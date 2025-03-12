@@ -33,8 +33,8 @@ public class UserController {
         return userService.addUser(createUserRequestDTO);
     }
 
-    @GetMapping("/{id}")
-    public UserResponseDto getById(@PathVariable(value = "id") String id) {
+    @GetMapping("/v1/{userId}")
+    public UserResponseDto getById(@PathVariable(value = "userId") String id) {
         return userService.getById(id);
     }
 
@@ -46,8 +46,8 @@ public class UserController {
 
 
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable(name = "id") String id){
+    @DeleteMapping("/v1/{userId}")
+    public ResponseEntity<String> deleteUser(@PathVariable(name = "userId") String id){
         userService.deleteUser(id);
         String message = "Kullanıcı başarıyla silindi."+ id;
         return ResponseEntity.ok(message);

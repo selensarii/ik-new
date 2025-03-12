@@ -44,8 +44,6 @@ public class ProjectController {
         return projectService.updateProject(updateProjectRequestDTO);
     }
 
-
-
     @DeleteMapping("/v1/{projectId}")
     public ResponseEntity<String> deleteProject(@PathVariable(name = "projectId") String id) {
         projectService.deleteProject(id);
