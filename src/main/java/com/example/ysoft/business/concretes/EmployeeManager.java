@@ -39,29 +39,6 @@ public class EmployeeManager implements EmployeeService {
 
         return toCreateEmployeeResponse(savedEmployee);
     }
-
-    private Employee toEntity(CreateEmployeeRequestDTO createEmployeeRequestDTO, Project project) {
-        return Employee.builder()
-                .fullName(createEmployeeRequestDTO.getFullName())
-                .position(createEmployeeRequestDTO.getPosition())
-                .identityNumber(createEmployeeRequestDTO.getIdentityNumber())
-                .salary(createEmployeeRequestDTO.getSalary())
-                .project(project)
-                .build();
-    }
-
-    private CreateEmployeeResponseDTO toCreateEmployeeResponse(Employee savedEmployee) {
-        return CreateEmployeeResponseDTO.builder()
-                .id(savedEmployee.getId())
-                .fullName(savedEmployee.getFullName())
-                .position(savedEmployee.getPosition())
-                .identityNumber(savedEmployee.getIdentityNumber())
-                .salary(savedEmployee.getSalary())
-                .projectId(savedEmployee.getProject() != null ? savedEmployee.getProject().getId() : null)
-                .build();
-    }
-
-
     @Override
     public EmployeeResponseDto getById(String id) {
         UUID employeeId = UUID.fromString(id);
@@ -102,5 +79,26 @@ public class EmployeeManager implements EmployeeService {
     @Override
     public String getFindEmployeeFullNameById(String id) {
         return employeeRepository.findEmployeeFullNameById(UUID.fromString(id));
+    }
+
+    //DÖNÜŞÜMLER
+    private CreateEmployeeResponseDTO toCreateEmployeeResponse(Employee savedEmployee) {
+        return CreateEmployeeResponseDTO.builder()
+                .id(savedEmployee.getId())
+                .fullName(savedEmployee.getFullName())
+                .position(savedEmployee.getPosition())
+                .identityNumber(savedEmployee.getIdentityNumber())
+                .salary(savedEmployee.getSalary())
+                .projectId(savedEmployee.getProject() != null ? savedEmployee.getProject().getId() : null)
+                .build();
+    }
+    private Employee toEntity(CreateEmployeeRequestDTO createEmployeeRequestDTO, Project project) {
+        return Employee.builder()
+                .fullName(createEmployeeRequestDTO.getFullName())
+                .position(createEmployeeRequestDTO.getPosition())
+                .identityNumber(createEmployeeRequestDTO.getIdentityNumber())
+                .salary(createEmployeeRequestDTO.getSalary())
+                .project(project)
+                .build();
     }
 }

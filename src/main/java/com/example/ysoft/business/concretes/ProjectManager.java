@@ -70,15 +70,6 @@ public class ProjectManager implements ProjectService {
                 .map(this::toUpdateProjectResponse)
                 .orElseThrow(() -> new ProjectNotFoundException("Project not found or update failed"));
     }
-    private UpdateProjectResponseDTO toUpdateProjectResponse(Project project) {
-        return new UpdateProjectResponseDTO(
-                project.getId(),
-                project.getName(),
-                project.getMaxEmployee(),
-                project.getMinEmployee(),
-                project.getTotalEmployee()
-        );
-    }
 
     @Override
     public void deleteProject(String id) {
@@ -126,6 +117,8 @@ public class ProjectManager implements ProjectService {
         return dtoList;
     }
 
+
+    //DÖNÜŞÜMLER
     private ProjectResponseDto toResponse(Project project) {
         return ProjectResponseDto.builder()
                 .id(project.getId())
@@ -135,16 +128,6 @@ public class ProjectManager implements ProjectService {
                 .totalEmployee(project.getTotalEmployee())
                 .build();
     }
-
-    private Project toEntity(ProjectRequestDto projectRequestDto) {
-        return Project.builder()
-                .name(projectRequestDto.getName())
-                .minEmployee(projectRequestDto.getMinEmployee())
-                .maxEmployee(projectRequestDto.getMaxEmployee())
-                .totalEmployee(projectRequestDto.getTotalEmployee())
-                .build();
-    }
-
     private Project toEntitys(CreateProjectRequestDTO createProjectRequestDTO) {
         return Project.builder()
                 .name(createProjectRequestDTO.getName())
@@ -155,6 +138,15 @@ public class ProjectManager implements ProjectService {
     }
     private CreateProjectResponseDTO toRespons(Project project) {
         return new CreateProjectResponseDTO(
+                project.getId(),
+                project.getName(),
+                project.getMaxEmployee(),
+                project.getMinEmployee(),
+                project.getTotalEmployee()
+        );
+    }
+    private UpdateProjectResponseDTO toUpdateProjectResponse(Project project) {
+        return new UpdateProjectResponseDTO(
                 project.getId(),
                 project.getName(),
                 project.getMaxEmployee(),

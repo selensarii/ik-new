@@ -2,11 +2,16 @@ package com.example.ysoft.api.controller;
 
 import com.example.ysoft.business.abstracts.UserService;
 import com.example.ysoft.business.dtos.requests.UserRequestDto;
+import com.example.ysoft.business.dtos.requests.user.CreateUserRequestDTO;
+import com.example.ysoft.business.dtos.requests.user.UpdateUserRequestDTO;
 import com.example.ysoft.business.dtos.responses.UserResponseDto;
+import com.example.ysoft.business.dtos.responses.user.CreateUserResponseDTO;
+import com.example.ysoft.business.dtos.responses.user.UpdateUserResponseDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("users")
@@ -24,8 +29,8 @@ public class UserController {
     }
 
     @PostMapping
-    public UserResponseDto addUser(@RequestBody UserRequestDto userRequestDto) {
-        return userService.addUser(userRequestDto);
+    public CreateUserResponseDTO addUser(@RequestBody CreateUserRequestDTO createUserRequestDTO) {
+        return userService.addUser(createUserRequestDTO);
     }
 
     @GetMapping("/{id}")
@@ -33,10 +38,13 @@ public class UserController {
         return userService.getById(id);
     }
 
-    @PutMapping("/{id}")
-    public UserResponseDto updateUser(@PathVariable(name = "id") String id, @RequestBody UserRequestDto userRequestDto) {
-        return userService.updateUser(id, userRequestDto);
+    @PutMapping("/v1/{userId}")
+    public UpdateUserResponseDTO updateUser(@PathVariable UUID userId, @RequestBody UpdateUserRequestDTO updateUserRequestDTO) {
+        updateUserRequestDTO.setId(userId);
+        return userService.updateUser(updateUserRequestDTO);
     }
+
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable(name = "id") String id){
