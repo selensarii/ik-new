@@ -1,6 +1,7 @@
 package com.example.ysoft.core.entities;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,6 +15,7 @@ public abstract class BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+
     private UUID id;
 
     private LocalDateTime createdDate;

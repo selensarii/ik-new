@@ -7,14 +7,16 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@ToString
+
 public class CreateEmployeeRequestDTO {
+
     private String fullName;
     private String position;
     private String identityNumber;
     private String salary;
     private UUID projectId;
+
+
 }
 
 

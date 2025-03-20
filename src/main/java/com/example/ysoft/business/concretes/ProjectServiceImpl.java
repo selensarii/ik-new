@@ -5,6 +5,7 @@ import com.example.ysoft.business.dtos.requests.project.CreateProjectRequestDTO;
 import com.example.ysoft.business.dtos.requests.project.UpdateProjectRequestDTO;
 import com.example.ysoft.business.dtos.responses.*;
 import com.example.ysoft.business.dtos.responses.project.*;
+import com.example.ysoft.core.mapper.MapperService;
 import com.example.ysoft.dataAccess.ProjectRepository;
 import com.example.ysoft.entities.Employee;
 import com.example.ysoft.entities.Project;
@@ -22,10 +23,11 @@ import java.util.stream.Collectors;
 public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final MapperService mapperService;
 
     @Override
     public List<ProjectResponseDto> getAllProjects() {
-        return projectRepository.findAll().stream().map(this::toResponse).collect(Collectors.toList());
+        return projectRepository.findAll().stream().map(mapperService::toResponse).collect(Collectors.toList());
     }
 
     @Override
@@ -37,10 +39,10 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public CreateProjectResponseDTO addProject(CreateProjectRequestDTO createProjectRequestDTO) {
-        Project project = toEntitys(createProjectRequestDTO);
+        Project project = mapperService.toEntitys(createProjectRequestDTO);
 
         Project savedProject = projectRepository.save(project);
-        return toRespons(savedProject);
+        return mapperService.toRespons(savedProject);
     }
 
 
@@ -49,7 +51,7 @@ public class ProjectServiceImpl implements ProjectService {
         UUID projectId = UUID.fromString(id);
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException("Project id bulunamadı"));
-        return toResponse(project);
+        return  mapperService.toResponse(project);
     }
 
     @Override
@@ -66,7 +68,7 @@ public class ProjectServiceImpl implements ProjectService {
 
                     return projectRepository.save(existingProject);
                 })
-                .map(this::toUpdateProjectResponse)
+                .map(mapperService::toUpdateProjectResponse)
                 .orElseThrow(() -> new ProjectNotFoundException("Project not found or update failed"));
     }
 
@@ -113,44 +115,5 @@ public class ProjectServiceImpl implements ProjectService {
         }
         return dtoList;
     }
-
-
-    //DÖNÜŞÜMLER
-    private ProjectResponseDto toResponse(Project project) {
-        return ProjectResponseDto.builder()
-                .id(project.getId())
-                .name(project.getName())
-                .maxEmployee(project.getMaxEmployee())
-                .minEmployee(project.getMinEmployee())
-                .totalEmployee(project.getTotalEmployee())
-                .build();
-    }
-    private Project toEntitys(CreateProjectRequestDTO createProjectRequestDTO) {
-        return Project.builder()
-                .name(createProjectRequestDTO.getName())
-                .minEmployee(createProjectRequestDTO.getMinEmployee())
-                .maxEmployee(createProjectRequestDTO.getMaxEmployee())
-                .totalEmployee(createProjectRequestDTO.getTotalEmployee())
-                .build();
-    }
-    private CreateProjectResponseDTO toRespons(Project project) {
-        return new CreateProjectResponseDTO(
-                project.getId(),
-                project.getName(),
-                project.getMaxEmployee(),
-                project.getMinEmployee(),
-                project.getTotalEmployee()
-        );
-    }
-    private UpdateProjectResponseDTO toUpdateProjectResponse(Project project) {
-        return new UpdateProjectResponseDTO(
-                project.getId(),
-                project.getName(),
-                project.getMaxEmployee(),
-                project.getMinEmployee(),
-                project.getTotalEmployee()
-        );
-    }
-
 
 }

@@ -1,6 +1,5 @@
 package com.example.ysoft.business.abstracts;
 
-import com.example.ysoft.business.dtos.requests.UserRequestDto;
 import com.example.ysoft.business.dtos.requests.user.CreateUserRequestDTO;
 import com.example.ysoft.business.dtos.requests.user.UpdateUserRequestDTO;
 import com.example.ysoft.business.dtos.responses.UserResponseDto;

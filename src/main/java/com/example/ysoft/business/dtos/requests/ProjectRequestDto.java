@@ -8,8 +8,7 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@ToString
+
 public class ProjectRequestDto {
     private UUID id;
     private String name;

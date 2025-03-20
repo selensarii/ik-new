@@ -7,16 +7,11 @@ import lombok.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@ToString
+
 public class UserRequestDto {
+
     private String nickName;
     private String password;
-
-    public User toDto(){
-        return User.builder()
-                .password(password)
-                .nickName(nickName)
-                .build();
-    }
+    
 }
+

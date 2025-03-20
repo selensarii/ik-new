@@ -8,8 +8,7 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@ToString
+
 public class EmployeeRequestDto {
     private String fullName;
     private String position;

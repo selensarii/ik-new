@@ -6,11 +6,12 @@ import java.util.UUID;
 
 @Setter
 @Getter
-@Builder
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
+
 public class ProjectResponseDto {
+
     private UUID id;
     private String name;
     private Long maxEmployee;

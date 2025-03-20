@@ -6,6 +6,7 @@ import com.example.ysoft.business.dtos.requests.user.UpdateUserRequestDTO;
 import com.example.ysoft.business.dtos.responses.UserResponseDto;
 import com.example.ysoft.business.dtos.responses.user.CreateUserResponseDTO;
 import com.example.ysoft.business.dtos.responses.user.UpdateUserResponseDTO;
+import com.example.ysoft.core.mapper.MapperService;
 import com.example.ysoft.dataAccess.UserRepository;
 import com.example.ysoft.entities.User;
 import com.example.ysoft.library.UserNotFoundException;
@@ -19,10 +20,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final MapperService mapperService;
 
     @Override
     public List<UserResponseDto> getAllUsers() {
-        return userRepository.findAll().stream().map(this::toResponse).toList();
+        return userRepository.findAll().stream().map(mapperService::toResponsed).toList();
     }
 
     @Override
@@ -46,7 +48,7 @@ public class UserServiceImpl implements UserService {
         UUID userId = UUID.fromString(id);
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User bulunamadı"));
-        return toResponse(user);
+        return mapperService.toResponsed(user);
     }
 
     @Override
@@ -60,10 +62,9 @@ public class UserServiceImpl implements UserService {
 
                     return userRepository.save(existingUser);
                 })
-                .map(this::toUpdateUserResponse)
+                .map(mapperService::toUpdateUserResponse)
                 .orElseThrow(() -> new UserNotFoundException("User bulunamadı."));
     }
-
 
     @Override
     public void deleteUser(String id) {
@@ -71,19 +72,5 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(userId);
     }
 
-    private UserResponseDto toResponse(User user) {
-        return UserResponseDto.builder()
-                .id(user.getId().toString())
-                .password(user.getPassword())
-                .nickName(user.getNickName())
-                .build();
-    }
-    private UpdateUserResponseDTO toUpdateUserResponse(User user) {
-        return new UpdateUserResponseDTO(
-                user.getId(),
-                user.getNickName(),
-                user.getPassword()
-        );
-    }
 
 }

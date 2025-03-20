@@ -17,6 +17,7 @@ import java.util.UUID;
 @RequestMapping("users")
 @CrossOrigin(origins = "*")
 public class UserController {
+
     private final UserService userService;
 
     public UserController(UserService userService) {
@@ -43,11 +44,10 @@ public class UserController {
         return userService.updateUser(updateUserRequestDTO);
     }
 
-
     @DeleteMapping("/v1/userId/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable(name = "userId") String userId){
         userService.deleteUser(userId);
-        String message = "Kullanıcı başarıyla silindi."+ userId;
+        String message = "kullanici silindi."+ userId;
         return ResponseEntity.ok(message);
     }
 }

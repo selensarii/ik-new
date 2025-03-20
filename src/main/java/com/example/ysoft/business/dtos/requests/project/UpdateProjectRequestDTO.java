@@ -11,9 +11,11 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 public class UpdateProjectRequestDTO {
+    
     private UUID id;
     private String name;
     private Long maxEmployee;
     private Long minEmployee;
     private Long totalEmployee;
+
 }

@@ -9,9 +9,8 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@ToString
 public class UpdateEmployeeRequestDTO {
+    
     private UUID id;
     private String fullName;
     private String position;

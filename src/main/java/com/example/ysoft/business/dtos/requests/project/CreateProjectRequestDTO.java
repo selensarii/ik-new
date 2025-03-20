@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class CreateProjectRequestDTO {
+    
     private String name;
     private Long maxEmployee;
     private Long minEmployee;
