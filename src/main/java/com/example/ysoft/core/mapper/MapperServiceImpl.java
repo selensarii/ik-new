@@ -2,6 +2,7 @@ package com.example.ysoft.core.mapper;
 
 import com.example.ysoft.business.dtos.requests.employee.CreateEmployeeRequestDTO;
 import com.example.ysoft.business.dtos.requests.project.CreateProjectRequestDTO;
+import com.example.ysoft.business.dtos.requests.user.CreateUserRequestDTO;
 import com.example.ysoft.business.dtos.responses.EmployeeResponseDto;
 import com.example.ysoft.business.dtos.responses.ProjectResponseDto;
 import com.example.ysoft.business.dtos.responses.UserResponseDto;
@@ -9,6 +10,7 @@ import com.example.ysoft.business.dtos.responses.employee.CreateEmployeeResponse
 import com.example.ysoft.business.dtos.responses.employee.UpdateEmployeeResponseDTO;
 import com.example.ysoft.business.dtos.responses.project.CreateProjectResponseDTO;
 import com.example.ysoft.business.dtos.responses.project.UpdateProjectResponseDTO;
+import com.example.ysoft.business.dtos.responses.user.CreateUserResponseDTO;
 import com.example.ysoft.business.dtos.responses.user.UpdateUserResponseDTO;
 import com.example.ysoft.entities.Employee;
 import com.example.ysoft.entities.Project;
@@ -125,5 +127,18 @@ public class MapperServiceImpl implements MapperService {
         updateEmployeeResponseDTO.setIdentityNumber(employee.getIdentityNumber());
         updateEmployeeResponseDTO.setSalary(employee.getSalary());
         return updateEmployeeResponseDTO;
+    }
+
+    @Override
+    public User toUserEntity(CreateUserRequestDTO dto){
+        User user = new User();
+        user.setNickName(dto.getNickName());
+        user.setPassword(dto.getPassword());
+        return user;
+    }
+
+    @Override
+    public CreateUserResponseDTO toUserResponse(User user) {
+        return new CreateUserResponseDTO(user.getId(), user.getNickName(), user.getPassword());
     }
 }

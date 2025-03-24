@@ -42,7 +42,6 @@ public class UserServiceTest {
         // When
         CreateUserResponseDTO actual = userService.addUser(requestDTO);
 
-        // Then
         assertEquals(expected, actual);
     }
 

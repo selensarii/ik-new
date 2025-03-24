@@ -1,8 +1,8 @@
 package com.example.ysoft.api.controller;
 
-import com.example.ysoft.business.abstracts.EmployeeService;
 import com.example.ysoft.business.abstracts.ProjectService;
-import com.example.ysoft.business.dtos.requests.project.*;
+import com.example.ysoft.business.dtos.requests.project.CreateProjectRequestDTO;
+import com.example.ysoft.business.dtos.requests.project.UpdateProjectRequestDTO;
 import com.example.ysoft.business.dtos.responses.ProjectResponseDto;
 import com.example.ysoft.business.dtos.responses.project.*;
 import org.junit.jupiter.api.Test;
@@ -10,22 +10,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import java.util.Arrays;
 import java.util.List;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ProjectControllerTest {
-
-    private MockMvc mockMvc;
 
     @Mock
     private ProjectService projectService;
@@ -33,131 +29,130 @@ public class ProjectControllerTest {
     @InjectMocks
     private ProjectController projectController;
 
-
     @Test
-    void test_getAllProjects() throws Exception {
-        // Given
-        ProjectResponseDto projectResponse = new ProjectResponseDto();
-        projectResponse.setId(UUID.randomUUID());
-        projectResponse.setName("Test Project");
+    void test_getAllProjects() {
+        ProjectResponseDto projectResponseDto1 = new ProjectResponseDto();
+        projectResponseDto1.setId(UUID.randomUUID());
+        projectResponseDto1.setName("Project 1");
 
-        List<ProjectResponseDto> expected = List.of(projectResponse);
-        when(projectService.getAllProjects()).thenReturn(List.of(projectResponse));
+        ProjectResponseDto projectResponseDto2 = new ProjectResponseDto();
+        projectResponseDto2.setId(UUID.randomUUID());
+        projectResponseDto2.setName("Project 2");
 
-        // When
+        List<ProjectResponseDto> expected = Arrays.asList(projectResponseDto1, projectResponseDto2);
+
+        when(projectService.getAllProjects()).thenReturn(expected);
+
         List<ProjectResponseDto> actual = projectController.getAllProjects();
 
-        // Then
         assertEquals(expected, actual);
     }
 
+    @Test
+    void test_addProject() {
+        CreateProjectRequestDTO createProjectRequestDTO = new CreateProjectRequestDTO("New Project",   12L,6L,5L );
+
+
+        CreateProjectResponseDTO expected = new CreateProjectResponseDTO();
+        expected.setId(UUID.randomUUID());
+        expected.setName("New Project");
+
+        when(projectService.addProject(createProjectRequestDTO)).thenReturn(expected);
+
+        CreateProjectResponseDTO actual = projectController.addProject(createProjectRequestDTO);
+
+        assertEquals(expected, actual);
+    }
 
     @Test
-    void test_addProject() throws Exception {
-        CreateProjectRequestDTO requestDTO = new CreateProjectRequestDTO(
-                "Test Project", 100L, 10L, 50L);
+    void test_getById() {
+        UUID uuid = UUID.randomUUID();
+        String projectId = uuid.toString();
+        ProjectResponseDto expected = new ProjectResponseDto();
+        expected.setId(uuid);
+        expected.setName("alkaravli");
 
-        UUID projectId = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
-        CreateProjectResponseDTO expected = new CreateProjectResponseDTO(
+        when(projectService.getById(projectId)).thenReturn(expected);
+
+        ProjectResponseDto actual = projectController.getById(projectId);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void test_updateProject() {
+        UUID projectId = UUID.randomUUID();
+        UpdateProjectRequestDTO updateProjectRequestDTO = new UpdateProjectRequestDTO(
                 projectId,
-                "Test Project",
-                100L,
-                10L,
-                50L
-        );
-
-        when(projectService.addProject(requestDTO)).thenReturn(expected);
-
-        CreateProjectResponseDTO actual = projectController.addProject(requestDTO);
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    void test_getProjectById() throws Exception {
-        // Given
-        ProjectResponseDto responseDto = new ProjectResponseDto();
-        when(projectService.getById("projectId")).thenReturn(responseDto);
-        ProjectResponseDto actual = projectController.getById("projectId");
-
-      assertEquals(responseDto, actual);
-    }
-
-    @Test
-    void test_updateProject() throws Exception {
-        // Given
-        UUID validUUID = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
-
-        UpdateProjectRequestDTO requestDTO = new UpdateProjectRequestDTO(
-                validUUID,
-                "Updated Project",
+                "alkaravli",
                 10L,
                 5L,
                 8L
         );
-
 
         UpdateProjectResponseDTO expected = new UpdateProjectResponseDTO(
-                validUUID,
-                "Updated Project",
+                projectId,
+                "alkaravli",
                 10L,
                 5L,
                 8L
         );
 
-        when(projectService.updateProject(requestDTO)).thenReturn(expected);
-        UpdateProjectResponseDTO actual = projectController.updateProject(requestDTO);
-        assertEquals(expected,actual);
+        when(projectService.updateProject(updateProjectRequestDTO)).thenReturn(expected);
 
-    }
-
-    @Test
-    void test_deleteProject() throws Exception {
-        // Given
-        doNothing().when(projectService).deleteProject("projectId");
-
-        // When & Then
-        mockMvc.perform(delete("/projects/v1/projectId/{projectId}", "projectId"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Proje başarıyla silindi: projectId"));
-    }
-
-    @Test
-    void test_getEmployeeNamesByProjectId() throws Exception {
-        List<GetEmployeeNamesByProjectIdResponseDTO> expected = List.of(new GetEmployeeNamesByProjectIdResponseDTO("Selen Sarı"));
-
-        when(projectService.getFindEmployeeNamesByProjectId("projectId")).thenReturn(expected);
-
-        List<GetEmployeeNamesByProjectIdResponseDTO> actual = projectController.getEmployeeNamesByProjectId("projectId");
+        UpdateProjectResponseDTO actual = projectController.updateProject(updateProjectRequestDTO);
 
         assertEquals(expected, actual);
     }
 
+    @Test
+    void test_deleteProject() {
+        String projectId = UUID.randomUUID().toString();
+        ResponseEntity<String> expectedResponse = new ResponseEntity<>("Proje başarıyla silindi: " + projectId, HttpStatus.OK);
+
+        ResponseEntity<String> actualResponse = projectController.deleteProject(projectId);
+
+        assertEquals(expectedResponse, actualResponse);
+        verify(projectService, times(1)).deleteProject(projectId);
+    }
 
     @Test
-    void test_getEmployeeCountByProjectId() throws Exception {
+    void test_getEmployeeNamesByProjectId() {
+        String projectId = UUID.randomUUID().toString();
+        GetEmployeeNamesByProjectIdResponseDTO responseDTO1 = new GetEmployeeNamesByProjectIdResponseDTO("Employee 1");
+        GetEmployeeNamesByProjectIdResponseDTO responseDTO2 = new GetEmployeeNamesByProjectIdResponseDTO("Employee 2");
+        List<GetEmployeeNamesByProjectIdResponseDTO> expected = Arrays.asList(responseDTO1, responseDTO2);
+
+        when(projectService.getFindEmployeeNamesByProjectId(projectId)).thenReturn(expected);
+
+        List<GetEmployeeNamesByProjectIdResponseDTO> actual = projectController.getEmployeeNamesByProjectId(projectId);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void test_getCountEmployeesByProjectId() {
+        String projectId = UUID.randomUUID().toString();
         GetCountEmployeesByProjectIdResponseDTO expected = new GetCountEmployeesByProjectIdResponseDTO(5L);
-        when(projectService.getCountEmployeesByProjectId("projectId")).thenReturn(expected);
-        GetCountEmployeesByProjectIdResponseDTO actual = projectController.getCountEmployeesByProjectId("projectId");
-        assertEquals(expected,actual);
 
-    }
+        when(projectService.getCountEmployeesByProjectId(projectId)).thenReturn(expected);
 
-
-    @Test
-    void test_getEmployeesByProjectId() throws Exception {
-        // Given
-        GetFindEmployeesByProjectIdResponseDTO employee1 = new GetFindEmployeesByProjectIdResponseDTO("John Doe", "Software Engineer", "123456789", "$5000");
-        GetFindEmployeesByProjectIdResponseDTO employee2 = new GetFindEmployeesByProjectIdResponseDTO("Jane Doe", "Project Manager", "987654321", "$6000");
-
-        List<GetFindEmployeesByProjectIdResponseDTO> expected = List.of(employee1, employee2);
-
-        when(projectService.getFindEmployeesByProjectId("projectId")).thenReturn(expected);
-
-        List<GetFindEmployeesByProjectIdResponseDTO> actual = projectController.getFindEmployeesByProjectId("projectId");
+        GetCountEmployeesByProjectIdResponseDTO actual = projectController.getCountEmployeesByProjectId(projectId);
 
         assertEquals(expected, actual);
     }
 
-}
+    @Test
+    void test_getFindEmployeesByProjectId() {
+        String projectId = UUID.randomUUID().toString();
+        GetFindEmployeesByProjectIdResponseDTO responseDTO1 = new GetFindEmployeesByProjectIdResponseDTO("Employee 1", "Developer", "123", "5000.0");
+        GetFindEmployeesByProjectIdResponseDTO responseDTO2 = new GetFindEmployeesByProjectIdResponseDTO("Employee 2", "Tester", "456", "6000.0");
+        List<GetFindEmployeesByProjectIdResponseDTO> expected = Arrays.asList(responseDTO1, responseDTO2);
 
+        when(projectService.getFindEmployeesByProjectId(projectId)).thenReturn(expected);
+
+        List<GetFindEmployeesByProjectIdResponseDTO> actual = projectController.getFindEmployeesByProjectId(projectId);
+
+        assertEquals(expected, actual);
+    }
+}

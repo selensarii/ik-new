@@ -42,7 +42,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = mapperService.toEntity(createEmployeeRequestDTO, project);
         Employee savedEmployee = employeeRepository.save(employee);
 
-        System.out.println("Saved Employee ID: " + savedEmployee.getId()); // Burada ID'nin boş olup olmadığını kontrol et
         return mapperService.toCreateEmployeeResponse(savedEmployee);
     }
     

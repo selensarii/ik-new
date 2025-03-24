@@ -1,35 +1,29 @@
 package com.example.ysoft.api.controller;
 
 import com.example.ysoft.business.abstracts.EmployeeService;
-import com.example.ysoft.business.dtos.requests.EmployeeRequestDto;
 import com.example.ysoft.business.dtos.requests.employee.CreateEmployeeRequestDTO;
 import com.example.ysoft.business.dtos.requests.employee.UpdateEmployeeRequestDTO;
 import com.example.ysoft.business.dtos.responses.employee.CreateEmployeeResponseDTO;
-import com.example.ysoft.business.dtos.responses.employee.UpdateEmployeeResponseDTO;
 import com.example.ysoft.business.dtos.responses.EmployeeResponseDto;
-import org.junit.jupiter.api.BeforeEach;
+import com.example.ysoft.business.dtos.responses.employee.UpdateEmployeeResponseDTO;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class EmployeeControllerTest {
-
-
-    private MockMvc mockMvc;
+public class EmployeeControllerTest {
 
     @Mock
     private EmployeeService employeeService;
@@ -37,94 +31,85 @@ class EmployeeControllerTest {
     @InjectMocks
     private EmployeeController employeeController;
 
-    @BeforeEach //mockları başlatmam gerekti ilk olarak
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
     @Test
-    void test_getAllEmployees() throws Exception {
-        // Given
-        EmployeeRequestDto employeeRequestDto = new EmployeeRequestDto();
-        employeeRequestDto.setFullName("John Doe");
-        EmployeeResponseDto employeeResponse = new EmployeeResponseDto();
-        employeeResponse.setId(UUID.fromString("550e8400-e29b-41d4-a716-446655440000"));
-        employeeResponse.setFullName("John Doe");
+    void test_getAllEmployees() {
+        EmployeeResponseDto employeeResponseDto1 = new EmployeeResponseDto();
+        employeeResponseDto1.setId(UUID.randomUUID());
+        employeeResponseDto1.setFullName("Selen Sari");
+        employeeResponseDto1.setPosition("Developer");
 
-        List<EmployeeResponseDto> expected =List.of(employeeResponse);
+        EmployeeResponseDto employeeResponseDto2 = new EmployeeResponseDto();
+        employeeResponseDto2.setId(UUID.randomUUID());
+        employeeResponseDto2.setFullName("Filiz Sari");
+        employeeResponseDto2.setPosition("Tester");
 
-        when(employeeService.getAllEmployees()).thenReturn(List.of(employeeResponse));
+        List<EmployeeResponseDto> expected = Arrays.asList(employeeResponseDto1, employeeResponseDto2);
 
-        List<EmployeeResponseDto> actual=employeeController.getAllEmployees();
+        when(employeeService.getAllEmployees()).thenReturn(expected);
+
+        List<EmployeeResponseDto> actual = employeeController.getAllEmployees();
+
         assertEquals(expected, actual);
     }
-
 
     @Test
     void test_addEmployee() {
-        // Given
-        CreateEmployeeRequestDTO requestDTO = new CreateEmployeeRequestDTO();
-        requestDTO.setFullName("selen sari");
+        CreateEmployeeRequestDTO createEmployeeRequestDTO = new CreateEmployeeRequestDTO();
+        createEmployeeRequestDTO.setFullName("selen sari");
+        createEmployeeRequestDTO.setPosition("developer");
 
+        UUID uuid = UUID.randomUUID();
         CreateEmployeeResponseDTO expected = new CreateEmployeeResponseDTO();
+        expected.setId(uuid);
         expected.setFullName("selen sari");
-        when(employeeService.addEmployee(requestDTO)).thenReturn(expected);
+        expected.setPosition("developer");
 
-        // Act
-        CreateEmployeeResponseDTO actual = employeeController.addEmployee(requestDTO);
+        when(employeeService.addEmployee(createEmployeeRequestDTO)).thenReturn(expected);
 
-        // Debug için ekleyelim:
-        System.out.println("Expected: " + expected);
-        System.out.println("Actual: " + actual);
+        CreateEmployeeResponseDTO actual = employeeController.addEmployee(createEmployeeRequestDTO);
 
-        assertNotNull(actual, "Controller metodu null döndürmemeli!");
         assertEquals(expected, actual);
     }
 
     @Test
-    void test_updateEmployee() throws Exception {
-        // Given
-        UpdateEmployeeRequestDTO requestDTO = new UpdateEmployeeRequestDTO();
-        requestDTO.setId(UUID.fromString("550e8400-e29b-41d4-a716-446655440000"));
-        requestDTO.setFullName("Jane Doe");
+    void test_updateEmployee() throws JsonProcessingException {
+        UpdateEmployeeRequestDTO updateEmployeeRequestDTO = new UpdateEmployeeRequestDTO();
+        updateEmployeeRequestDTO.setId(UUID.randomUUID());
+        updateEmployeeRequestDTO.setFullName("selen sari");
+        updateEmployeeRequestDTO.setPosition("tester");
 
         UpdateEmployeeResponseDTO expected = new UpdateEmployeeResponseDTO();
-        expected.setId(UUID.fromString("550e8400-e29b-41d4-a716-446655440000"));
-        expected.setFullName("Jane Doe");
+        expected.setId(updateEmployeeRequestDTO.getId());
+        expected.setFullName("selen sari");
+        expected.setPosition("tester");
 
-        when(employeeService.updateEmployee(requestDTO)).thenReturn(expected);
+        when(employeeService.updateEmployee(updateEmployeeRequestDTO)).thenReturn(expected);
 
-        UpdateEmployeeResponseDTO actual = employeeController.updateEmployee(requestDTO);
+        UpdateEmployeeResponseDTO actual = employeeController.updateEmployee(updateEmployeeRequestDTO);
 
-        // Then
         assertEquals(expected, actual);
     }
 
-
     @Test
-    void test_deleteEmployee() throws Exception {
-        // Given
-        String employeeId = "1";
-        Mockito.doNothing().when(employeeService).deleteEmployee(employeeId);
+    void test_deleteEmployee() {
+        String employeeId = UUID.randomUUID().toString();
+        ResponseEntity<String> expectedResponse = new ResponseEntity<>("calisan basariyla silindi: " + employeeId, HttpStatus.OK);
 
-        // When
-        mockMvc.perform(delete("/employees/v1/employeeId/{employeeId}", employeeId))
-                //then
-                .andExpect(status().isOk())
-                .andExpect(content().string("calisan basariyla silindi: " + employeeId));
+        ResponseEntity<String> actualResponse = employeeController.deleteEmployee(employeeId);
+
+        assertEquals(expectedResponse, actualResponse);
+        verify(employeeService, times(1)).deleteEmployee(employeeId);
     }
 
     @Test
-    void test_getEmployeeFullName() throws Exception {
-        // Given
-        String employeeId = "1";
-        String fullName = "John Doe";
+    void test_getEmployeeFullName() {
+        String employeeId = UUID.randomUUID().toString();
+        String expected = "John Doe";
 
-        when(employeeService.getFindEmployeeFullNameById(employeeId)).thenReturn(fullName);
+        when(employeeService.getFindEmployeeFullNameById(employeeId)).thenReturn(expected);
 
-        // When & Then
-        mockMvc.perform(get("/employees/v1/fullName/employeeId/{employeeId}", employeeId))
-                .andExpect(status().isOk())
-                .andExpect(content().string(fullName));
+        String actual = employeeController.getEmployeeFullName(employeeId);
+
+        assertEquals(expected, actual);
     }
 }

@@ -29,19 +29,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public CreateUserResponseDTO addUser(CreateUserRequestDTO createUserRequestDTO) {
-        User user = toUserEntity(createUserRequestDTO);
+        User user = mapperService.toUserEntity(createUserRequestDTO);
         User savedUser = userRepository.save(user);
-        return toUserResponse(savedUser);
+        return mapperService.toUserResponse(savedUser);
     }
-    //dönüşüm
-    private User toUserEntity(CreateUserRequestDTO dto) {
-        return new User(dto.getNickName(), dto.getPassword());
-    }
-
-    private CreateUserResponseDTO toUserResponse(User user) {
-        return new CreateUserResponseDTO(user.getId(), user.getNickName(), user.getPassword());
-    }
-
 
     @Override
     public UserResponseDto getById(String id) {

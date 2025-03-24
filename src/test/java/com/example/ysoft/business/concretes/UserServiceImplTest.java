@@ -5,94 +5,117 @@ import com.example.ysoft.business.dtos.requests.user.UpdateUserRequestDTO;
 import com.example.ysoft.business.dtos.responses.UserResponseDto;
 import com.example.ysoft.business.dtos.responses.user.CreateUserResponseDTO;
 import com.example.ysoft.business.dtos.responses.user.UpdateUserResponseDTO;
+import com.example.ysoft.core.mapper.MapperService;
 import com.example.ysoft.dataAccess.UserRepository;
 import com.example.ysoft.entities.User;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class UserServiceImplTest {
+@ExtendWith(MockitoExtension.class)
+class UserServiceImplTest {
+
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private MapperService mapperService; // MapperService arayüzünü mockluyoruz
 
     @InjectMocks
     private UserServiceImpl userService;
 
-    private User user;
-    private CreateUserRequestDTO createUserRequestDTO;
-    private UpdateUserRequestDTO updateUserRequestDTO;
-
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-
-        user = new User("testNick", "testPassword");
-        user.setId(UUID.randomUUID());
-
-        createUserRequestDTO = new CreateUserRequestDTO("testNick", "testPassword");
-        updateUserRequestDTO = new UpdateUserRequestDTO(user.getId(), "updatedNick", "updatedPassword");
-    }
-
     @Test
-    public void testAddUser() {
-        when(userRepository.save(any(User.class))).thenReturn(user);
+    void test_getAllUsers() {
+        User user1 = new User("nick1", "pass1");
+        user1.setId(UUID.randomUUID());
+        User user2 = new User("nick2", "pass2");
+        user2.setId(UUID.randomUUID());
+        List<User> users = Arrays.asList(user1, user2);
 
-        CreateUserResponseDTO actual = userService.addUser(createUserRequestDTO);
+        UserResponseDto response1 = new UserResponseDto(user1.getId().toString(), user1.getNickName(), user1.getPassword());
+        UserResponseDto response2 = new UserResponseDto(user2.getId().toString(), user2.getNickName(), user2.getPassword());
+        List<UserResponseDto> expected = Arrays.asList(response1, response2);
 
-        assertNotNull(actual);
-        assertEquals(user.getId(), actual.getId());
-        assertEquals(user.getNickName(), actual.getNickName());
-        assertEquals(user.getPassword(), actual.getPassword());
-    }
-
-    @Test
-    public void testGetAllUsers() {
-        when(userRepository.findAll()).thenReturn(List.of(user));
+        when(userRepository.findAll()).thenReturn(users);
+        when(mapperService.toResponsed(user1)).thenReturn(response1);
+        when(mapperService.toResponsed(user2)).thenReturn(response2);
 
         List<UserResponseDto> actual = userService.getAllUsers();
 
-        assertNotNull(actual);
-        assertEquals(1, actual.size()); //listenin büyüklüğünün 1 omasını bekliyoruz yani 1 kullanıcı
-        assertEquals(user.getNickName(), actual.get(0).getNickName()); //buradaki 0 listenin ilk elemanı
+        assertEquals(expected, actual);
     }
 
     @Test
-    public void test_getById() {
-        when(userRepository.findById(any(UUID.class))).thenReturn(Optional.of(user));
+    void test_addUser() {
+        CreateUserRequestDTO createUserRequestDTO = new CreateUserRequestDTO("nick1", "pass1");
+        User user = new User("nick1", "pass1");
+        UUID uuid = UUID.randomUUID();
+        CreateUserResponseDTO createUserResponseDTO = new CreateUserResponseDTO(uuid, "nick1", "pass1");
 
-        UserResponseDto actual = userService.getById(user.getId().toString());
+        when(mapperService.toUserEntity(createUserRequestDTO)).thenReturn(user);
+        when(userRepository.save(user)).thenReturn(user);
+        when(mapperService.toUserResponse(user)).thenReturn(createUserResponseDTO);
 
-        assertNotNull(actual);
-        assertEquals(user.getNickName(), actual.getNickName());
-        assertEquals(user.getPassword(), actual.getPassword());
+        CreateUserResponseDTO actual = userService.addUser(createUserRequestDTO);
+        assertEquals(createUserResponseDTO.getNickName(), actual.getNickName());
     }
 
     @Test
-    public void test_updateUser() {
-        when(userRepository.findById(any(UUID.class))).thenReturn(Optional.of(user));
-        when(userRepository.save(any(User.class))).thenReturn(user);
+    void test_getById() {
+        // Arrange
+        UUID userId = UUID.randomUUID();
+        User user = new User("nick1", "pass1");
+        user.setId(userId);
+        UserResponseDto expected = new UserResponseDto(userId.toString(), "nick1", "pass1");
 
-        UpdateUserResponseDTO actual = userService.updateUser(updateUserRequestDTO);
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(mapperService.toResponsed(user)).thenReturn(expected);
 
-        assertEquals(user.getId(), actual.getId());
-        assertEquals("updatedNick", actual.getNickName()); //burayı sor
-        assertEquals("updatedPassword", actual.getPassword());
+        UserResponseDto actual = userService.getById(userId.toString());
+
+        assertEquals(expected, actual);
     }
 
     @Test
-    public void testDeleteUser() {
+    void test_updateUser() {
+        // Arrange
+        UUID userId = UUID.randomUUID();
+        UpdateUserRequestDTO requestDTO = new UpdateUserRequestDTO(userId, "updatedNick", "updatedPass");
+        User existingUser = new User("oldNick", "oldPass");
+        existingUser.setId(userId);
+        User updatedUser = new User("updatedNick", "updatedPass");
+        updatedUser.setId(userId);
 
-        userService.deleteUser(user.getId().toString());
+        UpdateUserResponseDTO expected = new UpdateUserResponseDTO(userId, "updatedNick", "updatedPass");
 
-        verify(userRepository, times(1)).deleteById(any(UUID.class));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
+        when(userRepository.save(any(User.class))).thenReturn(updatedUser);
+        when(mapperService.toUpdateUserResponse(updatedUser)).thenReturn(expected);
+
+        UpdateUserResponseDTO actual = userService.updateUser(requestDTO);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void test_deleteUser() {
+        // Arrange
+        UUID userId = UUID.randomUUID();
+
+        // Act
+        userService.deleteUser(userId.toString());
+
+        // Assert
+        verify(userRepository).deleteById(userId);
     }
 }

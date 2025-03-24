@@ -67,7 +67,7 @@ public class ProjectServiceTest {
         UUID projectId = UUID.randomUUID();
         Project expected = new Project();
         expected.setId(projectId);
-        expected.setName("Test Project");
+        expected.setName("alkaravli");
 
         when(projectService.findById(projectId.toString())).thenReturn(expected);
 

@@ -33,15 +33,15 @@ class EmployeeServiceTest {
         employeeResponse.setId(employeeId);
         employeeResponse.setFullName("Selen sari");
 
-        List<EmployeeResponseDto> expectedList = List.of(employeeResponse);
+        List<EmployeeResponseDto> expected = List.of(employeeResponse);
 
-        when(employeeService.getAllEmployees()).thenReturn(expectedList);
+        when(employeeService.getAllEmployees()).thenReturn(expected);
 
         // When
-        List<EmployeeResponseDto> actualList = employeeService.getAllEmployees();
+        List<EmployeeResponseDto> actual = employeeService.getAllEmployees();
 
         // Then
-        assertEquals(expectedList, actualList);
+        assertEquals(expected, actual);
     }
 
 
