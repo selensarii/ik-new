@@ -57,19 +57,16 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public UpdateProjectResponseDTO updateProject(UpdateProjectRequestDTO updateProjectRequestDTO) {
         UUID projectId = updateProjectRequestDTO.getId();
+        Project existingProject = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException("Project not found"));
 
-        return projectRepository.findById(projectId)
-                .map(existingProject -> {
+        existingProject.setName(updateProjectRequestDTO.getName());
+        existingProject.setMaxEmployee(updateProjectRequestDTO.getMaxEmployee());
+        existingProject.setMinEmployee(updateProjectRequestDTO.getMinEmployee());
+        existingProject.setTotalEmployee(updateProjectRequestDTO.getTotalEmployee());
 
-                    existingProject.setName(updateProjectRequestDTO.getName());
-                    existingProject.setMaxEmployee(updateProjectRequestDTO.getMaxEmployee());
-                    existingProject.setMinEmployee(updateProjectRequestDTO.getMinEmployee());
-                    existingProject.setTotalEmployee(updateProjectRequestDTO.getTotalEmployee());
-
-                    return projectRepository.save(existingProject);
-                })
-                .map(mapperService::toUpdateProjectResponse)
-                .orElseThrow(() -> new ProjectNotFoundException("Project not found or update failed"));
+        Project updatedProject = projectRepository.save(existingProject);
+        return mapperService.toUpdateProjectResponse(updatedProject);
     }
 
     @Override

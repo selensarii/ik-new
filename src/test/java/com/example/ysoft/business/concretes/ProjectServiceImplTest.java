@@ -161,7 +161,7 @@ class ProjectServiceImplTest {
 
         List<GetFindEmployeesByProjectIdResponseDTO> actualResponse = projectService.getFindEmployeesByProjectId(projectId.toString());
 
-        for (int i = 0; i < expectedResponse.size(); i++) {
+        for (int i = 0; i < expectedResponse.size(); i++) { //tek tek elle yapmam gerekti yoksa response içinde aynı şeyi yapmamı istiyordu
             assertEquals(expectedResponse.get(i).getFullName(), actualResponse.get(i).getFullName());
             assertEquals(expectedResponse.get(i).getPosition(), actualResponse.get(i).getPosition());
             assertEquals(expectedResponse.get(i).getIdentityNumber(), actualResponse.get(i).getIdentityNumber());

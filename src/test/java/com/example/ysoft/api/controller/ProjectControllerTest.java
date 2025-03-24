@@ -50,12 +50,12 @@ public class ProjectControllerTest {
 
     @Test
     void test_addProject() {
-        CreateProjectRequestDTO createProjectRequestDTO = new CreateProjectRequestDTO("New Project",   12L,6L,5L );
+        CreateProjectRequestDTO createProjectRequestDTO = new CreateProjectRequestDTO("alkaravli",   12L,6L,5L );
 
 
         CreateProjectResponseDTO expected = new CreateProjectResponseDTO();
         expected.setId(UUID.randomUUID());
-        expected.setName("New Project");
+        expected.setName("alkaravli");
 
         when(projectService.addProject(createProjectRequestDTO)).thenReturn(expected);
 

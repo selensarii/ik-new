@@ -34,7 +34,7 @@ class EmployeeServiceImplTest {
     private ProjectService projectService;
 
     @Mock
-    private MapperService mapperService; // MapperService arayüzünü mockluyoruz
+    private MapperService mapperService;
 
     @InjectMocks
     private EmployeeServiceImpl employeeService;
