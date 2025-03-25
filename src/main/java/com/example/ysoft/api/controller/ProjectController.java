@@ -6,6 +6,7 @@ import com.example.ysoft.business.dtos.requests.project.CreateProjectRequestDTO;
 import com.example.ysoft.business.dtos.requests.project.UpdateProjectRequestDTO;
 import com.example.ysoft.business.dtos.responses.*;
 import com.example.ysoft.business.dtos.responses.project.*;
+import com.example.ysoft.core.utils.MessageConstant;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +44,7 @@ public class ProjectController {
     @DeleteMapping("/v1/projectId/{projectId}")
     public ResponseEntity<String> deleteProject(@PathVariable(name = "projectId") String projectId) {
         projectService.deleteProject(projectId);
-        return ResponseEntity.ok("Proje başarıyla silindi: " + projectId);
+        return ResponseEntity.ok(MessageConstant.PROJECT_DELETED_SUCCESSFULLY+ projectId);
     }
     @GetMapping("/v1/employees/projectId/{projectId}")
     public List<GetEmployeeNamesByProjectIdResponseDTO> getEmployeeNamesByProjectId(@PathVariable String projectId) {

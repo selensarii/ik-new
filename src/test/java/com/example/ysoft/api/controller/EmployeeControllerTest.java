@@ -6,12 +6,14 @@ import com.example.ysoft.business.dtos.requests.employee.UpdateEmployeeRequestDT
 import com.example.ysoft.business.dtos.responses.employee.CreateEmployeeResponseDTO;
 import com.example.ysoft.business.dtos.responses.EmployeeResponseDto;
 import com.example.ysoft.business.dtos.responses.employee.UpdateEmployeeResponseDTO;
+import com.example.ysoft.core.utils.MessageConstant;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -27,6 +29,7 @@ public class EmployeeControllerTest {
 
     @Mock
     private EmployeeService employeeService;
+    
 
     @InjectMocks
     private EmployeeController employeeController;
@@ -93,7 +96,7 @@ public class EmployeeControllerTest {
     @Test
     void test_deleteEmployee() {
         String employeeId = UUID.randomUUID().toString();
-        ResponseEntity<String> expectedResponse = new ResponseEntity<>("calisan basariyla silindi: " + employeeId, HttpStatus.OK);
+        ResponseEntity<String> expectedResponse = new ResponseEntity<>(MessageConstant.EMPLOYEE_DELETED_SUCCESSFULLY + employeeId, HttpStatus.OK);
 
         ResponseEntity<String> actualResponse = employeeController.deleteEmployee(employeeId);
 

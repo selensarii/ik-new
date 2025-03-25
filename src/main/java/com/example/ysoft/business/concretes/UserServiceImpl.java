@@ -7,6 +7,7 @@ import com.example.ysoft.business.dtos.responses.UserResponseDto;
 import com.example.ysoft.business.dtos.responses.user.CreateUserResponseDTO;
 import com.example.ysoft.business.dtos.responses.user.UpdateUserResponseDTO;
 import com.example.ysoft.core.mapper.MapperService;
+import com.example.ysoft.core.utils.MessageConstant;
 import com.example.ysoft.dataAccess.UserRepository;
 import com.example.ysoft.entities.User;
 import com.example.ysoft.library.UserNotFoundException;
@@ -38,7 +39,7 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto getById(String id) {
         UUID userId = UUID.fromString(id);
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User bulunamadı"));
+                .orElseThrow(() -> new UserNotFoundException(MessageConstant.USER_NOT_FOUND));
         return mapperService.toResponsed(user);
     }
 
@@ -54,7 +55,7 @@ public class UserServiceImpl implements UserService {
                     return userRepository.save(existingUser);
                 })
                 .map(mapperService::toUpdateUserResponse)
-                .orElseThrow(() -> new UserNotFoundException("User bulunamadı."));
+                .orElseThrow(() -> new UserNotFoundException(MessageConstant.USER_NOT_FOUND));
     }
 
     @Override

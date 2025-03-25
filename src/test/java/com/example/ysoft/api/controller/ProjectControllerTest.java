@@ -5,6 +5,7 @@ import com.example.ysoft.business.dtos.requests.project.CreateProjectRequestDTO;
 import com.example.ysoft.business.dtos.requests.project.UpdateProjectRequestDTO;
 import com.example.ysoft.business.dtos.responses.ProjectResponseDto;
 import com.example.ysoft.business.dtos.responses.project.*;
+import com.example.ysoft.core.utils.MessageConstant;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -108,7 +109,7 @@ public class ProjectControllerTest {
     @Test
     void test_deleteProject() {
         String projectId = UUID.randomUUID().toString();
-        ResponseEntity<String> expectedResponse = new ResponseEntity<>("Proje başarıyla silindi: " + projectId, HttpStatus.OK);
+        ResponseEntity<String> expectedResponse = new ResponseEntity<>(MessageConstant.PROJECT_DELETED_SUCCESSFULLY + projectId, HttpStatus.OK);
 
         ResponseEntity<String> actualResponse = projectController.deleteProject(projectId);
 

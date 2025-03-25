@@ -7,6 +7,7 @@ import com.example.ysoft.business.dtos.requests.user.UpdateUserRequestDTO;
 import com.example.ysoft.business.dtos.responses.UserResponseDto;
 import com.example.ysoft.business.dtos.responses.user.CreateUserResponseDTO;
 import com.example.ysoft.business.dtos.responses.user.UpdateUserResponseDTO;
+import com.example.ysoft.core.utils.MessageConstant;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,7 +48,7 @@ public class UserController {
     @DeleteMapping("/v1/userId/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable(name = "userId") String userId){
         userService.deleteUser(userId);
-        String message = "kullanici silindi."+ userId;
+        String message = MessageConstant.USER_DELETED_SUCCESSFULLY+ userId;
         return ResponseEntity.ok(message);
     }
 }

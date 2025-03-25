@@ -6,6 +6,7 @@ import com.example.ysoft.business.dtos.requests.project.UpdateProjectRequestDTO;
 import com.example.ysoft.business.dtos.responses.*;
 import com.example.ysoft.business.dtos.responses.project.*;
 import com.example.ysoft.core.mapper.MapperService;
+import com.example.ysoft.core.utils.MessageConstant;
 import com.example.ysoft.dataAccess.ProjectRepository;
 import com.example.ysoft.entities.Employee;
 import com.example.ysoft.entities.Project;
@@ -34,7 +35,7 @@ public class ProjectServiceImpl implements ProjectService {
     public Project findById(String id) {
         UUID projectId = UUID.fromString(id);
         return projectRepository.findById(projectId)
-                .orElseThrow(() -> new ProjectNotFoundException("Project Bulunamadı"));
+                .orElseThrow(() -> new ProjectNotFoundException(MessageConstant.PROJECT_NOT_FOUND));
     }
 
     @Override
@@ -50,7 +51,7 @@ public class ProjectServiceImpl implements ProjectService {
     public ProjectResponseDto getById(String id) {
         UUID projectId = UUID.fromString(id);
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new ProjectNotFoundException("Project id bulunamadı"));
+                .orElseThrow(() -> new ProjectNotFoundException(MessageConstant.PROJECT_ID_NOT_FOUND));
         return  mapperService.toResponse(project);
     }
 
@@ -58,7 +59,7 @@ public class ProjectServiceImpl implements ProjectService {
     public UpdateProjectResponseDTO updateProject(UpdateProjectRequestDTO updateProjectRequestDTO) {
         UUID projectId = updateProjectRequestDTO.getId();
         Project existingProject = projectRepository.findById(projectId)
-                .orElseThrow(() -> new ProjectNotFoundException("Project not found"));
+                .orElseThrow(() -> new ProjectNotFoundException(MessageConstant.PROJECT_NOT_FOUND));
 
         existingProject.setName(updateProjectRequestDTO.getName());
         existingProject.setMaxEmployee(updateProjectRequestDTO.getMaxEmployee());

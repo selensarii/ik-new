@@ -20,6 +20,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.example.ysoft.core.utils.MessageConstant.EMPLOYEE_NOT_FOUND;
+
 @Service
 @RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
@@ -49,7 +51,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeResponseDto getById(String id) {
         UUID employeeId = UUID.fromString(id);
         Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new EmployeeNotFoundException("Employee bulunamadı"));
+                .orElseThrow(() -> new EmployeeNotFoundException(EMPLOYEE_NOT_FOUND));
         return mapperService.toResponsee(employee);
     }
 
@@ -57,7 +59,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public UpdateEmployeeResponseDTO updateEmployee(UpdateEmployeeRequestDTO updateEmployeeRequestDTO) {
         UUID employeeId = updateEmployeeRequestDTO.getId();
         Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new EmployeeNotFoundException("Employee bulunamadı"));
+                .orElseThrow(() -> new EmployeeNotFoundException(EMPLOYEE_NOT_FOUND));
         return mapperService.toUpdateEmployeeResponse(employee);
     }
 
